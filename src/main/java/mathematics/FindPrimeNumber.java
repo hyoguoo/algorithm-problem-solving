@@ -1,7 +1,7 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number:
+ * Problem Number: 1978
  */
 
 package mathematics;
