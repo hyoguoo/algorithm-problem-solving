@@ -4,7 +4,7 @@
  * Problem Number: 2609
  */
 
-package mathematics;
+package Mathematics;
 
 import java.io.BufferedReader;
 import java.io.IOException;

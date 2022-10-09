@@ -4,7 +4,7 @@
  * Problem Number: 2748
  */
 
-package mathematics;
+package Mathematics;
 
 import org.junit.jupiter.api.Test;
 

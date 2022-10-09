@@ -4,7 +4,7 @@
  * Problem Number: 2609
  */
 
-package mathematics;
+package Mathematics;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
