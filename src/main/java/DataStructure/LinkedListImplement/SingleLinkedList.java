@@ -31,6 +31,7 @@ public class SingleLinkedList<T> implements LinkedList<T> {
             addLast(value);
             return;
         }
+        if (index < 0 || index >= size) return;
 
         Node<T> newNode = new Node<>(value);
         Node<T> prevNode = this.getNode(index - 1);
