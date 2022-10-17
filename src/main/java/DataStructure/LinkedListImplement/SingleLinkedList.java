@@ -31,7 +31,7 @@ public class SingleLinkedList<T> implements LinkedList<T> {
             addLast(value);
             return;
         }
-        if (index < 0 || index >= size) return;
+        if (this.isInvalidIndex(index)) return;
 
         Node<T> newNode = new Node<>(value);
         Node<T> prevNode = this.getNode(index - 1);
@@ -89,7 +89,7 @@ public class SingleLinkedList<T> implements LinkedList<T> {
     public T remove(int index) {
         if (index == 0) return this.remove();
 
-        if (index >= size || index < 0) return null;
+        if (this.isInvalidIndex(index)) return null;
 
         Node<T> prevNode = this.getNode(index - 1);
         Node<T> removeNode = prevNode.next;
@@ -121,9 +121,7 @@ public class SingleLinkedList<T> implements LinkedList<T> {
 
     @Override
     public Node<T> getNode(int index) {
-        if (index < 0 || index >= size) {
-            return null;
-        }
+        if (this.isInvalidIndex(index)) return null;
 
         Node<T> currentNode = this.head;
 
@@ -157,5 +155,10 @@ public class SingleLinkedList<T> implements LinkedList<T> {
         this.head = null;
         this.tail = null;
         this.size = 0;
+    }
+
+    @Override
+    public boolean isInvalidIndex(int index) {
+        return index >= this.size || index < 0;
     }
 }

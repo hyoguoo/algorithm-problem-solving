@@ -25,4 +25,6 @@ public interface LinkedList<E> {
     int indexOf(E value);
 
     void clear();
+
+    boolean isInvalidIndex(int index);
 }
