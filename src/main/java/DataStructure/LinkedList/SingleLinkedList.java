@@ -1,4 +1,4 @@
-package DataStructure.LinkedListImplement;
+package DataStructure.LinkedList;
 
 public class SingleLinkedList<T> implements LinkedList<T> {
     private Node<T> head;
