@@ -1,9 +1,3 @@
-/*
- * BAEKJOON ONLINE JUDGE
- * https://www.acmicpc.net
- * Problem Number: 2609
- */
-
 package Mathematics;
 
 import org.junit.jupiter.api.Assertions;

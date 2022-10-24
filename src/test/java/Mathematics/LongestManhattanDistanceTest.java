@@ -1,15 +1,9 @@
-/*
- * goormlevel
- * https://level.goorm.io
- * Monday Challenge: 1주차 문제 3
- */
 
 package Mathematics;
 
-import Mathematics.LongestManhattanDistance;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LongestManhattanDistanceTest {
 

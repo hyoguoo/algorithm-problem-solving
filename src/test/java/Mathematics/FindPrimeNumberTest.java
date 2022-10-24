@@ -1,9 +1,3 @@
-/*
- * BAEKJOON ONLINE JUDGE
- * https://www.acmicpc.net
- * Problem Number: 1978
- */
-
 package Mathematics;
 
 import org.junit.jupiter.api.Test;

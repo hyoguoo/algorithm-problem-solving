@@ -1,9 +1,3 @@
-/*
- * goormlevel
- * https://level.goorm.io
- * Monday Challenge: 1주차 문제 2
- */
-
 package String;
 
 import org.junit.jupiter.api.Test;

@@ -1,3 +1,9 @@
+/*
+ * goormlevel
+ * https://level.goorm.io
+ * Monday Challenge: 1주차 문제 3
+ */
+
 package Sort;
 
 import java.io.BufferedReader;
