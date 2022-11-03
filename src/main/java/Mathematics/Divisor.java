@@ -1,3 +1,9 @@
+/*
+ * BAEKJOON ONLINE JUDGE
+ * https://www.acmicpc.net
+ * Problem Number: 1037
+ */
+
 package Mathematics;
 
 import java.io.BufferedReader;
