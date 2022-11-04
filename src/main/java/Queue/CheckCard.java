@@ -4,7 +4,7 @@
  * Monday Challenge: 4주차 문제 1
  */
 
-package DataStructure;
+package Queue;
 
 import java.io.BufferedReader;
 import java.io.IOException;

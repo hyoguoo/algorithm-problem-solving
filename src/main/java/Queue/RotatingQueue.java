@@ -4,7 +4,7 @@
  * Problem Number: 1021
  */
 
-package DataStructure;
+package Queue;
 
 import java.io.BufferedReader;
 import java.io.IOException;

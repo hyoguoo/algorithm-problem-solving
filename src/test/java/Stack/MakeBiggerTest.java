@@ -4,7 +4,7 @@
  * Problem Number: 2812
  */
 
-package DataStructure;
+package Stack;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,5 +1,7 @@
-package DataStructure.Tree;
+package DataStructureImplement.Tree;
 
+import DataStructureImplement.Tree.BinaryTree;
+import DataStructureImplement.Tree.Tree;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

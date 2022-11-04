@@ -1,4 +1,4 @@
-package DataStructure.Tree;
+package DataStructureImplement.Tree;
 
 public class Node {
     private Node left;

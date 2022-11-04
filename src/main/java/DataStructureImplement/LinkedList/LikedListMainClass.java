@@ -1,4 +1,4 @@
-package DataStructure.LinkedList;
+package DataStructureImplement.LinkedList;
 
 public class LikedListMainClass {
     public static void main(String[] args) {
