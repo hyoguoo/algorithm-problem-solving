@@ -4,7 +4,7 @@
  * Problem Number: 1021
  */
 
-package Queue;
+package Deque;
 
 import java.io.BufferedReader;
 import java.io.IOException;
