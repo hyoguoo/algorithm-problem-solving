@@ -1,4 +1,4 @@
-/*
+package Graph;/*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 1697
