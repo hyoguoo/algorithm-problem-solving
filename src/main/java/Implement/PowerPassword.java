@@ -1,7 +1,7 @@
 /*
  * goormlevel
  * https://level.goorm.io
- * Monday Challenge: 5주차 문제 2
+ * Monday Challenge: 6주차 문제 2
  */
 
 package Implement;
