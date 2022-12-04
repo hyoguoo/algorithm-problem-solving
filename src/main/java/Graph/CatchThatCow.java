@@ -1,8 +1,10 @@
-package Graph;/*
+/*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 1697
  */
+
+package Graph;
 
 import java.io.BufferedReader;
 import java.io.IOException;
