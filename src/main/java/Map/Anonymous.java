@@ -4,7 +4,7 @@
  * Problem Number: 1764
  */
 
-package Implement;
+package Map;
 
 import java.io.BufferedReader;
 import java.io.IOException;

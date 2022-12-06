@@ -4,7 +4,7 @@
  * Problem Number: 2577
  */
 
-package Mathematics;
+package Map;
 
 import java.io.BufferedReader;
 import java.io.IOException;
