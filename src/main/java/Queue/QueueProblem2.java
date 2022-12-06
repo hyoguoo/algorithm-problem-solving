@@ -25,7 +25,7 @@ public class QueueProblem2 {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         int length = Integer.parseInt(bufferedReader.readLine());
 
-        DequeImpl queueImpl = new DequeImpl();
+        QueueImpl2 queueImpl = new QueueImpl2();
         StringBuilder stringBuilder = new StringBuilder();
 
         for (int i = 0; i < length; i++) {
@@ -57,11 +57,11 @@ public class QueueProblem2 {
     }
 }
 
-class DequeImpl {
+class QueueImpl2 {
 
     Deque<Integer> deque;
 
-    public DequeImpl() {
+    public QueueImpl2() {
         this.deque = new LinkedList<>();
     }
 

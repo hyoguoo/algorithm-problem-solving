@@ -4,7 +4,7 @@
  * Problem Number: 2164
  */
 
-package Deque;
+package Queue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
