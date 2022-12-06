@@ -4,7 +4,7 @@
  * Problem Number: 1654
  */
 
-package Implement;
+package BinarySearch;
 
 import java.io.IOException;
 import java.util.ArrayList;
