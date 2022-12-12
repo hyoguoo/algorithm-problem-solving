@@ -4,7 +4,7 @@
  * Problem Number: 1107
  */
 
-package Greedy;
+package BruteForce;
 
 import java.io.BufferedReader;
 import java.io.IOException;
