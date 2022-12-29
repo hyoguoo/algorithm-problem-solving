@@ -2,6 +2,7 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 5525
+ * Cheat Level: 4
  */
 
 package String;
