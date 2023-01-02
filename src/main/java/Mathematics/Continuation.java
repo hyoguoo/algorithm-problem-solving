@@ -2,6 +2,8 @@
  * goormlevel
  * https://level.goorm.io
  * 출제 그라운드: 지속
+ * Cheat Level: 0
+ * Algorithm: Mathematics
  */
 
 package Mathematics;

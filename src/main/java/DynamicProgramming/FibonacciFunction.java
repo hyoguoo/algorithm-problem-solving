@@ -2,6 +2,8 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 1003
+ * Cheat Level: 2
+ * Algorithm: Dynamic Programming
  */
 
 package DynamicProgramming;

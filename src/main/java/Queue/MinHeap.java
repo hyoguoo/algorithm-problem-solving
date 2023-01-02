@@ -2,6 +2,8 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 1927
+ * Cheat Level: 0
+ * Algorithm: Heap / Priority Queue
  */
 
 package Queue;

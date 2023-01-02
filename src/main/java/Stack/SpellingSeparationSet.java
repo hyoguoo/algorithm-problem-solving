@@ -2,9 +2,11 @@
  * goormlevel
  * https://level.goorm.io
  * Monday Challenge: 2주차 문제 2
+ * Cheat Level: 0
+ * Algorithm: Stack
  */
 
-package Mathematics;
+package Stack;
 
 import java.io.BufferedReader;
 import java.io.IOException;

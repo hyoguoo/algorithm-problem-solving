@@ -2,6 +2,8 @@
  * goormlevel
  * https://level.goorm.io
  * Monday Challenge: 3주차 문제 2
+ * Cheat Level: 0
+ * Algorithm: Implementation
  */
 
 package Implement;

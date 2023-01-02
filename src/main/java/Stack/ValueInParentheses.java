@@ -2,6 +2,8 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 2504
+ * Cheat Level: 0
+ * Algorithm: Stack
  */
 
 package Stack;

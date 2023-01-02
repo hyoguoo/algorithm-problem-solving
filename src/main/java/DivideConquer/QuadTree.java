@@ -2,6 +2,8 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 1992
+ * Cheat Level: 0
+ * Algorithm: Divide Conquer
  */
 
 package DivideConquer;

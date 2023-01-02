@@ -2,6 +2,8 @@
  * goormlevel
  * https://level.goorm.io
  * Monday Challenge: 2주차 문제 4
+ * Cheat Level: 0
+ * Algorithm: Mathematics
  */
 
 package Mathematics;

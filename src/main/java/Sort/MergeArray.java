@@ -2,6 +2,8 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 11728
+ * Cheat Level: 3
+ * Algorithm: Two Pointer
  */
 
 package Sort;

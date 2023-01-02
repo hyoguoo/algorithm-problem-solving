@@ -17,11 +17,11 @@
 |   2   |  질문 게시판 참고  |
 |   3   | 핵심 알고리즘 검색  |
 |   4   | 유사 문제 풀이 참고 |
-|   5   |  다른 풀이 참고   |
+|   5   |    풀이 참고    |
 
-## Algorithm Type
+## Algorithm & Data Structure
 
-문제를 풀면서 사용한 알고리즘 종류
+문제를 풀면서 사용한 알고리즘 및 자료구조 종류
 
 - Combination
 - Big Integer
@@ -29,3 +29,22 @@
 - Mathematics
 - Backtracking
 - Graph
+- Binary Search
+- Implementation
+- Divide Conquer
+- Dynamic Programming
+- LCS
+- Greedy
+- Map
+- Combination
+- Permutation
+- Heap
+- Priority Queue
+- Deque
+- Tree Map
+- Queue
+- Stack
+- Two Pointer
+- Regular Expression
+- String
+- KMP

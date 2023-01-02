@@ -2,6 +2,8 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 2805
+ * Cheat Level: 1
+ * Algorithm: Binary Search
  */
 
 package BinarySearch;

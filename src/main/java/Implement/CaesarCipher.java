@@ -2,6 +2,8 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 5598
+ * Cheat Level: 0
+ * Algorithm: Implementation
  */
 
 package Implement;

@@ -2,6 +2,8 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 1157
+ * Cheat Level: 2
+ * Algorithm: Map
  */
 
 package Map;

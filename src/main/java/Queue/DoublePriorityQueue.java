@@ -2,6 +2,8 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 7662
+ * Cheat Level: 4
+ * Algorithm: Tree Map
  */
 
 package Queue;

@@ -2,9 +2,11 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 2562
+ * Cheat Level: 0
+ * Algorithm: Implementation
  */
 
-package Mathematics;
+package Implement;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -2,6 +2,8 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 11866
+ * Cheat Level: 0
+ * Algorithm: Deque
  */
 
 package Queue;

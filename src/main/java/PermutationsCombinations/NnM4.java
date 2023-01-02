@@ -2,6 +2,8 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 15652
+ * Cheat Level: 0
+ * Algorithm: Combination
  */
 
 package PermutationsCombinations;

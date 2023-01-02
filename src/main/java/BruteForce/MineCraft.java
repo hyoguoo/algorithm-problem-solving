@@ -2,6 +2,8 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 18111
+ * Cheat Level: 0
+ * Algorithm: Brute Force / Implementation
  */
 
 package BruteForce;

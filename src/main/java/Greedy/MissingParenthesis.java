@@ -2,6 +2,8 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 1541
+ * Cheat Level: 0
+ * Algorithm: Greedy / Mathematics
  */
 
 package Greedy;

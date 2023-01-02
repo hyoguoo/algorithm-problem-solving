@@ -2,6 +2,8 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 15903
+ * Cheat Level: 0
+ * Algorithm: Priority Queue / Greedy
  */
 
 package Queue;

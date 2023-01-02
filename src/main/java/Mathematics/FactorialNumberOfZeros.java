@@ -2,6 +2,8 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 1676
+ * Cheat Level: 0
+ * Algorithm: Mathematics / Big Integer
  */
 
 package Mathematics;

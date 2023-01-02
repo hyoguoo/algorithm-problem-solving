@@ -2,6 +2,8 @@
  * goormlevel
  * https://level.goorm.io
  * Monday Challenge: 4주차 문제 1
+ * Cheat Level: 0
+ * Algorithm: Queue
  */
 
 package Queue;
