@@ -18,3 +18,14 @@
 |   3   | 핵심 알고리즘 검색  |
 |   4   | 유사 문제 풀이 참고 |
 |   5   |  다른 풀이 참고   |
+
+## Algorithm Type
+
+문제를 풀면서 사용한 알고리즘 종류
+
+- Combination
+- Big Integer
+- Brute Force
+- Mathematics
+- Backtracking
+- Graph
