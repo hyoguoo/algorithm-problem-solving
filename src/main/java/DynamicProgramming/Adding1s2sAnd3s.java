@@ -3,7 +3,7 @@
  * https://www.acmicpc.net
  * Problem Number: 9095
  * Cheat Level: 0
- * Algorithm: Brute Force
+ * Algorithm: Dynamic Programming
  */
 
 package DynamicProgramming;
