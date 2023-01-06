@@ -47,3 +47,4 @@
 - Regular Expression
 - String
 - KMP
+- Knapsack
