@@ -23,7 +23,6 @@
 
 문제를 풀면서 사용한 알고리즘 및 자료구조 종류
 
-- Combination
 - Big Integer
 - Brute Force
 - Mathematics
