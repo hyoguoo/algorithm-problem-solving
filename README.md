@@ -48,3 +48,4 @@
 - String
 - KMP
 - Knapsack
+- LIS
