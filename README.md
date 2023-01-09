@@ -49,3 +49,4 @@
 - KMP
 - Knapsack
 - LIS
+- Tree
