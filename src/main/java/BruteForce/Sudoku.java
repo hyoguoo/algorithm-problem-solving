@@ -6,7 +6,7 @@
  * Algorithm: Backtracking
  */
 
-package Implement;
+package BruteForce;
 
 import java.io.BufferedReader;
 import java.io.IOException;
