@@ -39,21 +39,21 @@ class MakeBiggerTest {
     @Test
     void makeBiggerNumberToStackCase1() {
         int[] numberArray = {1, 2, 3, 1, 2, 3, 4};
-        MakeBigger.makeBiggerNumberToStack(numberArray, 3);
+        MakeBigger.solution(numberArray, 3);
         Assertions.assertEquals(MakeBigger.concatenateStackToString(MakeBigger.stack), "3234");
     }
 
     @Test
     void makeBiggerNumberToStackCase2() {
         int[] numberArray = {7, 8, 9, 8, 1, 1, 1, 1, 0, 1};
-        MakeBigger.makeBiggerNumberToStack(numberArray, 4);
+        MakeBigger.solution(numberArray, 4);
         Assertions.assertEquals(MakeBigger.concatenateStackToString(MakeBigger.stack), "981111");
     }
 
     @Test
     void getBiggerStack() {
         int[] numberArray = {7, 8, 9, 8, 1, 1, 1, 1, 0, 1};
-        int count = MakeBigger.getBiggerStack(numberArray, 4);
+        int count = MakeBigger.popSmallNumber(numberArray, 4);
         Assertions.assertEquals(count, 1);
     }
 

@@ -15,49 +15,42 @@ import java.util.Arrays;
 import java.util.Stack;
 
 public class MakeBigger {
+
     public static Stack<Integer> stack = new Stack<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int[] lengthArray = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        int[] numberArray = Arrays.stream(bufferedReader.readLine().split("")).mapToInt(Integer::parseInt).toArray();
+        int[] info = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+        int[] numbers = Arrays.stream(bufferedReader.readLine().split("")).mapToInt(Integer::parseInt).toArray();
+        int count = info[1];
 
-        int removeLength = lengthArray[1];
-
-        makeBiggerNumberToStack(numberArray, removeLength);
-
-        String result = concatenateStackToString(stack);
-        System.out.println(result);
+        solution(numbers, count);
+        System.out.println(concatenateStackToString(stack));
     }
 
-    public static void makeBiggerNumberToStack(int[] numberArray, int count) {
-        count = getBiggerStack(numberArray, count);
-        popStackNTimes(count);
+    public static void solution(int[] numbers, int count) {
+        int remainCount = popSmallNumber(numbers, count);
+        popStackNTimes(remainCount);
     }
 
     public static void popStackNTimes(int count) {
-        while (count-- > 0) {
-            stack.pop();
-        }
+        while (count-- > 0) stack.pop();
     }
 
-    public static int getBiggerStack(int[] numberArray, int removeLength) {
-        for (int value : numberArray) {
-            if (stack.isEmpty()) {
-                stack.push(value);
-            } else {
-                while (!stack.isEmpty() && removeLength > 0 && stack.peek() < value) {
-                    stack.pop();
-                    removeLength--;
-                }
-                stack.push(value);
+    public static int popSmallNumber(int[] numbers, int count) {
+        for (int value : numbers) {
+            while (!stack.isEmpty() && count > 0 && stack.peek() < value) {
+                stack.pop();
+                count--;
             }
+            stack.push(value);
         }
-        return removeLength;
+        return count;
     }
 
     public static String concatenateStackToString(Stack<Integer> stack) {
-        String str = Arrays.toString(stack.toArray());
-        return str.substring(1, str.length() - 1).replace(", ", "");
+        StringBuilder stringBuilder = new StringBuilder();
+        while (!stack.isEmpty()) stringBuilder.append(stack.pop());
+        return stringBuilder.reverse().toString();
     }
 }
