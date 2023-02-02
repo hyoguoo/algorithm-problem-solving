@@ -1,20 +1,21 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 10845
+ * Problem Number: 18258
  * Cheat Level: 0
- * Algorithm: Queue
+ * Algorithm: Deque
  */
 
-package Queue;
+package DataStructure;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Queue;
 
-public class QueueProblem {
+public class QueueProblem2 {
+
     static final String PUSH = "push";
     static final String POP = "pop";
     static final String SIZE = "size";
@@ -22,12 +23,12 @@ public class QueueProblem {
     static final String FRONT = "front";
     static final String BACK = "back";
 
-
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         int length = Integer.parseInt(bufferedReader.readLine());
 
-        QueueImpl queueImpl = new QueueImpl();
+        QueueImpl2 queueImpl = new QueueImpl2();
+        StringBuilder stringBuilder = new StringBuilder();
 
         for (int i = 0; i < length; i++) {
             String[] actions = bufferedReader.readLine().split(" ");
@@ -38,56 +39,55 @@ public class QueueProblem {
                     queueImpl.push(value);
                     break;
                 case POP:
-                    System.out.println(queueImpl.pop());
+                    stringBuilder.append(queueImpl.pop()).append("\n");
                     break;
                 case SIZE:
-                    System.out.println(queueImpl.size());
+                    stringBuilder.append(queueImpl.size()).append("\n");
                     break;
                 case EMPTY:
-                    System.out.println(queueImpl.empty());
+                    stringBuilder.append(queueImpl.empty()).append("\n");
                     break;
                 case FRONT:
-                    System.out.println(queueImpl.front());
+                    stringBuilder.append(queueImpl.front()).append("\n");
                     break;
                 case BACK:
-                    System.out.println(queueImpl.back());
+                    stringBuilder.append(queueImpl.back()).append("\n");
                     break;
             }
         }
+        System.out.println(stringBuilder);
     }
 }
 
-class QueueImpl {
+class QueueImpl2 {
 
-    Queue<Integer> queue;
-    int last;
+    Deque<Integer> deque;
 
-    public QueueImpl() {
-        this.queue = new LinkedList<>();
+    public QueueImpl2() {
+        this.deque = new LinkedList<>();
     }
 
     public void push(int value) {
-        this.queue.add(value);
-        this.last = value;
+        this.deque.add(value);
     }
 
     public int pop() {
-        return this.size() == 0 ? -1 : this.queue.remove();
+        return this.size() == 0 ? -1 : this.deque.remove();
     }
 
     public int size() {
-        return this.queue.size();
+        return this.deque.size();
     }
 
     public int empty() {
-        return this.queue.isEmpty() ? 1 : 0;
+        return this.deque.isEmpty() ? 1 : 0;
     }
 
     public int front() {
-        return this.size() == 0 ? -1 : this.queue.element();
+        return this.size() == 0 ? -1 : this.deque.getFirst();
     }
 
     public int back() {
-        return this.size() == 0 ? -1 : this.last;
+        return this.size() == 0 ? -1 : this.deque.getLast();
     }
 }

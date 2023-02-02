@@ -1,21 +1,20 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 2075
+ * Problem Number: 11279
  * Cheat Level: 0
- * Algorithm: Priority Queue
+ * Algorithm: Heap / Priority Queue
  */
 
-package Queue;
+package DataStructure;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.PriorityQueue;
 
-public class NthLargestNumber {
+public class MaxHeap {
 
     static PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(Collections.reverseOrder());
 
@@ -24,11 +23,19 @@ public class NthLargestNumber {
         int length = Integer.parseInt(bufferedReader.readLine());
 
         for (int i = 0; i < length; i++) {
-            int[] numbers = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            for (int number : numbers) priorityQueue.add(number);
+            int number = Integer.parseInt(bufferedReader.readLine());
+            int result = solution(number);
+            if (result >= 0) System.out.println(result);
         }
+    }
 
-        for (int i = 0; i < length - 1; i++) priorityQueue.poll();
-        System.out.println(priorityQueue.poll());
+    private static int solution(int number) {
+        if (number == 0) {
+            if (priorityQueue.isEmpty()) return 0;
+            return priorityQueue.poll();
+        } else {
+            priorityQueue.add(number);
+            return -1;
+        }
     }
 }

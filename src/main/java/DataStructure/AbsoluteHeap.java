@@ -1,22 +1,30 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 11279
+ * Problem Number: 11286
  * Cheat Level: 0
  * Algorithm: Heap / Priority Queue
  */
 
-package Queue;
+package DataStructure;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.PriorityQueue;
 
-public class MaxHeap {
+public class AbsoluteHeap {
 
-    static PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(Collections.reverseOrder());
+    static PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(new Comparator<Integer>() {
+        @Override
+        public int compare(Integer o1, Integer o2) {
+            int abs1 = Math.abs(o1);
+            int abs2 = Math.abs(o2);
+            if (abs1 == abs2) return o1 - o2;
+            else return abs1 - abs2;
+        }
+    });
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
@@ -25,7 +33,7 @@ public class MaxHeap {
         for (int i = 0; i < length; i++) {
             int number = Integer.parseInt(bufferedReader.readLine());
             int result = solution(number);
-            if (result >= 0) System.out.println(result);
+            if (number == 0) System.out.println(result);
         }
     }
 
