@@ -1,7 +1,7 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 14501
+ * Problem Number: 14501 / 15486
  * Cheat Level: 1
  * Algorithm: Dynamic Programming / Brute Force
  */
