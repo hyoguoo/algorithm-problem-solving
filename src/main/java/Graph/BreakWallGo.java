@@ -1,7 +1,7 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 2206
+ * Problem Number: 2206 / 14442
  * Cheat Level: 2
  * Algorithm: Graph
  */
@@ -26,7 +26,7 @@ public class BreakWallGo {
     final static int[][] DIRECTIONS = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
     final static int WALL = -1;
     final static int EMPTY = 0;
-    final static int BREAK_LIMIT = 1;
+    static int BREAK_LIMIT;
     static int N, M;
     static int[][][] map;
 
@@ -35,6 +35,7 @@ public class BreakWallGo {
         int[] info = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
         N = info[0];
         M = info[1];
+        BREAK_LIMIT = info[2];
         map = new int[BREAK_LIMIT + 1][N][M];
 
         for (int i = 0; i < N; i++) {
@@ -67,11 +68,17 @@ public class BreakWallGo {
                 int nextY = currentY + direction[1];
                 if (nextX < 0 || nextX >= N || nextY < 0 || nextY >= M) continue;
                 if (currentDepth < BREAK_LIMIT && map[currentDepth][nextX][nextY] == WALL) {
-                    map[currentDepth + 1][nextX][nextY] = currentDistance + 1;
-                    queue.add(new Point(nextX, nextY, currentDepth + 1, currentDistance + 1));
+                    for (int depth = currentDepth + 1; depth <= BREAK_LIMIT; depth++) {
+                        if (map[depth][nextX][nextY] == WALL) {
+                            map[depth][nextX][nextY] = currentDistance + 1;
+                            queue.add(new Point(nextX, nextY, depth, currentDistance + 1));
+                        }
+                    }
                 }
                 if (map[currentDepth][nextX][nextY] == EMPTY) {
-                    map[currentDepth][nextX][nextY] = currentDistance + 1;
+                    for (int depth = currentDepth; depth <= BREAK_LIMIT; depth++) {
+                        map[depth][nextX][nextY] = currentDistance + 1;
+                    }
                     queue.add(new Point(nextX, nextY, currentDepth, currentDistance + 1));
                 }
             }
