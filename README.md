@@ -52,3 +52,4 @@
 - Tree
 - Dijkstra
 - Floyd Warshall
+- Prefix Sum
