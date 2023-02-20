@@ -1,7 +1,7 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 2470
+ * Problem Number: 2467 / 2470
  * Cheat Level: 0
  * Algorithm: Two Pointer
  */
