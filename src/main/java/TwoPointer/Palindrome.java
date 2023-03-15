@@ -6,7 +6,7 @@
  * Algorithm: String / Two Pointer
  */
 
-package String;
+package TwoPointer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
