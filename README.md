@@ -53,3 +53,4 @@
 - Dijkstra
 - Floyd Warshall
 - Prefix Sum
+- Bellman Ford
