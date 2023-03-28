@@ -3,10 +3,10 @@
  * https://www.acmicpc.net
  * Problem Number: 17413
  * Cheat Level: 0
- * Algorithm: String
+ * Algorithm: String / Stack
  */
 
-package String;
+package DataStructure;
 
 import java.io.BufferedReader;
 import java.io.IOException;
