@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Laboratory {
+public class Laboratory1 {
 
     final static int EMPTY = 0;
     final static int WALL = 1;
