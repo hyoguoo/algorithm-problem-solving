@@ -3,7 +3,7 @@
  * https://www.acmicpc.net
  * Problem Number: 1992
  * Cheat Level: 0
- * Algorithm: Divide Conquer
+ * Algorithm: Divide and Conquer
  */
 
 package divideconquer;
