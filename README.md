@@ -58,3 +58,5 @@
 - Prefix Sum
 - Bellman Ford
 - Union Find
+- Minimum Spanning Tree
+- Kruskal Algorithm
