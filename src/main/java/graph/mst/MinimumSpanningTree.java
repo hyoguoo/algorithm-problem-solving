@@ -1,7 +1,7 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 1197
+ * Problem Number: 1197 / 1647
  * Cheat Level: 3
  * Algorithm: Minimum Spanning Tree / Kruskal Algorithm / Union Find
  */
