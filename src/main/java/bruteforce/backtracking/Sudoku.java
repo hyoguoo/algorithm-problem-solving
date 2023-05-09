@@ -1,7 +1,7 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 2580
+ * Problem Number: 2580 / 2239
  * Cheat Level: 0
  * Algorithm: Backtracking
  */
@@ -24,7 +24,7 @@ public class Sudoku {
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         for (int i = 0; i < SIZE; i++) {
-            board[i] = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+            board[i] = Arrays.stream(bufferedReader.readLine().split("")).mapToInt(Integer::parseInt).toArray();
             for (int j = 0; j < SIZE; j++) {
                 if (board[i][j] == 0) zeroList.add(new Zero(i, j));
             }
@@ -53,7 +53,7 @@ public class Sudoku {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                stringBuilder.append(board[i][j]).append(" ");
+                stringBuilder.append(board[i][j]);
             }
             stringBuilder.append("\n");
         }
@@ -93,14 +93,14 @@ public class Sudoku {
         }
         return true;
     }
-}
 
-class Zero {
-    int x;
-    int y;
+    static class Zero {
+        int x;
+        int y;
 
-    public Zero(int x, int y) {
-        this.x = x;
-        this.y = y;
+        public Zero(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
     }
 }
