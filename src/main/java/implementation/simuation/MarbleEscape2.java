@@ -1,7 +1,7 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 13460
+ * Problem Number: 13459 / 13460
  * Cheat Level: 0
  * Algorithm: Simulation
  */
