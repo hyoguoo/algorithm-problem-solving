@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
-public class MarbleEscape2 {
+public class MarbleEscape {
 
     final static char WALL = '#';
     final static char HOLE = 'O';
