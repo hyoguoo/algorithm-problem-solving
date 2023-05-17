@@ -60,3 +60,4 @@
 - Union Find
 - Minimum Spanning Tree
 - Kruskal Algorithm
+- Topological Sort
