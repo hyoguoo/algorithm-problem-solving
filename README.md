@@ -61,3 +61,4 @@
 - Minimum Spanning Tree
 - Kruskal Algorithm
 - Topological Sort
+- Geometry

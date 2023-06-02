@@ -3,10 +3,10 @@
  * https://www.acmicpc.net
  * Problem Number: 1085
  * Cheat Level: 0
- * Algorithm: Mathematics
+ * Algorithm: Mathematics / Geometry
  */
 
-package mathematics;
+package mathematics.geometry;
 
 import java.io.BufferedReader;
 import java.io.IOException;
