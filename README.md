@@ -62,3 +62,4 @@
 - Kruskal Algorithm
 - Topological Sort
 - Geometry
+- Counterclockwise
