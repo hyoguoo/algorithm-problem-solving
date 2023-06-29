@@ -15,7 +15,7 @@
 이를 해결하기 위해 Deque와 임시로 담아 둘 구조형 변수들을 사용하여 논리적으로 항상 정렬된 상태를 유지해 풀이할 수 있었다.
  */
 
-package implementation.simuation;
+package implementation.simulation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
