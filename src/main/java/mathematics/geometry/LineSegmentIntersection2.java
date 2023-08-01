@@ -1,7 +1,7 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 17387
+ * Problem Number: 17386 / 17387
  * Cheat Level: 4
  * Algorithm: Mathematics / Geometry / Counterclockwise
  */
