@@ -15,66 +15,81 @@ import java.util.*;
 
 public class Numbering {
 
-    static final List<Integer> resultList = new ArrayList<>();
-    static int N;
-    static boolean[][] map;
-    static int[] dx = {0, 0, 1, -1};
-    static int[] dy = {1, -1, 0, 0};
+    final static int[][] DIRECTIONS = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+    final static int EXIST = 1;
+    final static int VISITED = -1;
+    static int[][] map;
 
     public static void main(String[] args) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        N = Integer.parseInt(bufferedReader.readLine());
-
-        map = new boolean[N][N];
-        for (int i = 0; i < N; i++) {
-            String[] input = bufferedReader.readLine().split("");
-            for (int j = 0; j < N; j++) map[i][j] = input[j].equals("1");
-        }
-
-        counting();
-        Collections.sort(resultList);
-        System.out.println(resultList.size());
-        resultList.stream().sorted().forEach(System.out::println);
+        init();
+        List<Integer> result = solution();
+        printResult(result);
     }
 
-    private static void counting() {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (map[i][j]) travel(i, j);
+    private static void printResult(List<Integer> result) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(result.size()).append("\n");
+        result.stream().sorted().forEach(integer -> stringBuilder.append(integer).append("\n"));
+        System.out.println(stringBuilder);
+    }
+
+    private static List<Integer> solution() {
+        List<Integer> result = new ArrayList<>();
+
+        for (int n = 0; n < map.length; n++) {
+            for (int m = 0; m < map[n].length; m++) {
+                if (map[n][m] == EXIST) result.add(bfs(n, m));
             }
         }
+
+        return result;
     }
 
-    private static void travel(int i, int j) {
+    private static int bfs(int startN, int startM) {
+        Queue<Coordinate> queue = new LinkedList<>();
+        queue.add(new Coordinate(startN, startM));
         int count = 0;
-        Queue<Location> queue = new LinkedList<>();
-        queue.add(new Location(i, j));
 
         while (!queue.isEmpty()) {
-            Location removed = queue.remove();
-            int x = removed.x;
-            int y = removed.y;
-            if (map[x][y]) {
-                for (int d = 0; d < 4; d++) {
-                    int nx = x + dx[d];
-                    int ny = y + dy[d];
-                    if (0 <= nx && nx < N && 0 <= ny && ny < N && map[nx][ny]) queue.add(new Location(nx, ny));
-                }
-                count++;
-                map[x][y] = false;
+            Coordinate current = queue.poll();
+
+            if (map[current.n][current.m] != EXIST) continue;
+            map[current.n][current.m] = VISITED;
+            count++;
+
+            for (int[] direction : DIRECTIONS) {
+                int nextN = current.n + direction[0];
+                int nextM = current.m + direction[1];
+                if (!isInBound(nextN, nextM, map)) continue;
+                queue.add(new Coordinate(nextN, nextM));
             }
         }
 
-        resultList.add(count);
+        return count;
     }
-}
 
-class Location {
-    int x;
-    int y;
+    private static boolean isInBound(int n, int m, int[][] map) {
+        return n >= 0 && n < map.length && m >= 0 && m < map[n].length;
+    }
 
-    public Location(int x, int y) {
-        this.x = x;
-        this.y = y;
+    private static void init() throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(bufferedReader.readLine());
+        map = new int[N][N];
+
+        for (int n = 0; n < N; n++) {
+            int[] input = Arrays.stream(bufferedReader.readLine().split("")).mapToInt(Integer::parseInt).toArray();
+            map[n] = input;
+        }
+    }
+
+    static class Coordinate {
+        int n;
+        int m;
+
+        public Coordinate(int n, int m) {
+            this.n = n;
+            this.m = m;
+        }
     }
 }
