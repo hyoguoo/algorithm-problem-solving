@@ -11,7 +11,7 @@ package graph.bfs;
 import java.io.*;
 import java.util.*;
 
-public class Generator {
+public class Generator1 {
 
     final static int[][] DIRECTIONS = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
     final static int HOUSE = 1;
