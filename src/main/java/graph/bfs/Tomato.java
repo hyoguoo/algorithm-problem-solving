@@ -15,88 +15,74 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
-
 public class Tomato {
-    static final int[] dx = {-1, 1, 0, 0};
-    static final int[] dy = {0, 0, -1, 1};
-    static int WIDTH;
-    static int HEIGHT;
 
+    final static Queue<Coordinate> ripenQueue = new LinkedList<>();
+    final static int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    final static int TOMATO = 0;
+    final static int RIPEN = 1;
+    static int[][] board;
+    static int N, M;
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int[] infos = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        WIDTH = infos[0];
-        HEIGHT = infos[1];
-        int[][] tomatoBox = new int[HEIGHT][WIDTH];
-        Queue<Coordinate> ripeTomatoList = new LinkedList<>();
+        int[] info = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+        M = info[0];
+        N = info[1];
+        board = new int[N][M];
 
-        for (int x = 0; x < HEIGHT; x++) {
-            int[] tomatoList = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            for (int y = 0; y < WIDTH; y++) {
-                tomatoBox[x][y] = tomatoList[y];
-                if (tomatoBox[x][y] == 1) ripeTomatoList.add(new Coordinate(x, y));
+        for (int n = 0; n < N; n++) {
+            int[] input = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+            for (int m = 0; m < M; m++) {
+                if (input[m] == RIPEN) ripenQueue.add(new Coordinate(n, m));
+                board[n][m] = input[m];
             }
         }
 
-        bfsBox(tomatoBox, ripeTomatoList);
-        System.out.println(getMaxValue(tomatoBox));
-
+        System.out.println(solution());
     }
 
-    private static int getMaxValue(int[][] tomatoBox) {
-        int max = Integer.MIN_VALUE;
-        for (int[] tomatoes : tomatoBox) {
-            for (int tomato : tomatoes) {
-                if (tomato == 0) return -1;
-                if (max < tomato) max = tomato;
-            }
-        }
-        return max - 1;
-    }
+    private static int solution() {
+        while (!ripenQueue.isEmpty()) {
+            Coordinate current = ripenQueue.poll();
 
-    private static void bfsBox(int[][] tomatoBox, Queue<Coordinate> ripeTomatoList) {
-        while (!ripeTomatoList.isEmpty()) {
-            Coordinate coordinate = ripeTomatoList.poll();
-            traversal(tomatoBox, ripeTomatoList, coordinate);
-        }
-    }
+            for (int[] direction : DIRECTIONS) {
+                int nextN = current.n + direction[0];
+                int nextM = current.m + direction[1];
 
-    private static void traversal(int[][] tomatoBox, Queue<Coordinate> ripeTomatoList, Coordinate coordinate) {
-        int x = coordinate.getX();
-        int y = coordinate.getY();
-        int currentDay = tomatoBox[x][y];
-
-        for (int i = 0; i < dx.length; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-
-            if (nx >= 0 && ny >= 0 && nx < HEIGHT && ny < WIDTH) {
-                if (tomatoBox[nx][ny] == 0) {
-                    ripeTomatoList.add(new Coordinate(nx, ny));
-                    tomatoBox[nx][ny] = currentDay + 1;
+                if (isInBound(nextN, nextM) && board[nextN][nextM] == TOMATO) {
+                    board[nextN][nextM] = board[current.n][current.m] + 1;
+                    ripenQueue.add(new Coordinate(nextN, nextM));
                 }
             }
         }
 
-    }
-}
-
-
-class Coordinate {
-    private final int x;
-    private final int y;
-
-    public Coordinate(int x, int y) {
-        this.x = x;
-        this.y = y;
+        return getMaxDay();
     }
 
-    public int getX() {
-        return x;
+    private static int getMaxDay() {
+        int max = 0;
+
+        for (int[] row : board) {
+            for (int tomato : row) {
+                if (tomato == TOMATO) return -1;
+                max = Math.max(max, tomato);
+            }
+        }
+
+        return max - 1;
     }
 
-    public int getY() {
-        return y;
+    private static boolean isInBound(int n, int m) {
+        return 0 <= n && n < N && 0 <= m && m < M;
+    }
+
+    static class Coordinate {
+        int n, m;
+
+        public Coordinate(int n, int m) {
+            this.n = n;
+            this.m = m;
+        }
     }
 }
