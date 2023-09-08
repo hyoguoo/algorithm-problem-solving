@@ -12,7 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class CreateStar {
+public class CreateStar1_10 {
 
     static char star = '*';
     static StringBuilder stringBuilder = new StringBuilder();
