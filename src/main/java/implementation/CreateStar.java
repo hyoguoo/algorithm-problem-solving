@@ -1,7 +1,7 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 2438 / 2439 / 2440 / 2441 / 2442 / 2443 / 2444 / 2445
+ * Problem Number: 2438 / 2439 / 2440 / 2441 / 2442 / 2443 / 2444 / 2445 / 2446
  * Cheat Level: 0
  * Algorithm: Implementation
  */
@@ -21,7 +21,7 @@ public class CreateStar {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         int length = Integer.parseInt(bufferedReader.readLine());
 
-        solution8(length);
+        solution9(length);
         System.out.print(stringBuilder);
     }
 
@@ -88,6 +88,19 @@ public class CreateStar {
             for (int j = 1; j <= i; j++) addStar();
             for (int j = 1; j <= (length - i) * 2; j++) addSpace();
             for (int j = 1; j <= i; j++) addStar();
+            addNewline();
+        }
+    }
+
+    public static void solution9(int length) {
+        for (int i = length; i >= 1; i--) {
+            for (int j = 1; j <= length - i; j++) addSpace();
+            for (int j = 1; j <= i * 2 - 1; j++) addStar();
+            addNewline();
+        }
+        for (int i = 2; i <= length; i++) {
+            for (int j = 1; j <= length - i; j++) addSpace();
+            for (int j = 1; j <= i * 2 - 1; j++) addStar();
             addNewline();
         }
     }
