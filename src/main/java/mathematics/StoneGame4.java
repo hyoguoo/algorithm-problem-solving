@@ -3,10 +3,10 @@
  * https://www.acmicpc.net
  * Problem Number: 9658
  * Cheat Level: 0
- * Algorithm: Dynamic Programming
+ * Algorithm: Mathematics
  */
 
-package dynamicprogramming;
+package mathematics;
 
 import java.io.BufferedReader;
 import java.io.IOException;
