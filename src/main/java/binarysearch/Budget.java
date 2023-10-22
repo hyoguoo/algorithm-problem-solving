@@ -1,18 +1,29 @@
 /*
- * PROGRAMMERS SCHOOL
- * https://school.programmers.co.kr
- * Problem Number: -
+ * BAEKJOON ONLINE JUDGE
+ * https://www.acmicpc.net
+ * Problem Number: 2512
  * Cheat Level: 0
  * Algorithm: Binary Search
  */
 
 package binarysearch;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 
 public class Budget {
 
-    public int solution(int[] budgets, int M) {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        bufferedReader.readLine();
+        int[] budgets = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+        int m = Integer.parseInt(bufferedReader.readLine());
+        System.out.println(solution(budgets, m));
+    }
+
+    public static int solution(int[] budgets, int m) {
         int left = 0;
         int right = Arrays.stream(budgets).max().orElse(0);
 
@@ -23,7 +34,7 @@ public class Budget {
 
             int budgetSum = getBudgetSum(budgets, mid);
 
-            if (budgetSum <= M) {
+            if (budgetSum <= m) {
                 left = mid + 1;
                 result = mid;
             } else {
@@ -34,7 +45,7 @@ public class Budget {
         return result;
     }
 
-    private int getBudgetSum(int[] budgets, int budgetLimit) {
+    private static int getBudgetSum(int[] budgets, int budgetLimit) {
         int sum = 0;
 
         for (int budget : budgets) {
