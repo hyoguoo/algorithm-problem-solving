@@ -3,10 +3,10 @@
  * https://www.acmicpc.net
  * Problem Number: 3273
  * Cheat Level: 0
- * Algorithm:
+ * Algorithm: Two Pointers
  */
 
-package binarysearch;
+package twopointer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
