@@ -6,7 +6,7 @@
  * Algorithm: Map / Mathematics
  */
 
-package datastructure.map;
+package datastructure.mapset;
 
 import java.io.BufferedReader;
 import java.io.IOException;

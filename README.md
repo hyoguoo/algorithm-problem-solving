@@ -37,6 +37,7 @@
 - Dynamic Programming
 - LCS
 - Greedy
+- Set
 - Map
 - Combination
 - Permutation
