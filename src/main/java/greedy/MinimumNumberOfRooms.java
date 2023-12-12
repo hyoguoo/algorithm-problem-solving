@@ -2,7 +2,7 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 19598 / 11000
- * Cheat Level: 5
+ * Cheat Level: 0
  * Algorithm: Greedy
  */
 
@@ -15,45 +15,50 @@ import java.util.*;
 
 public class MinimumNumberOfRooms {
 
-    final static Queue<Meet> meetList = new PriorityQueue<>(Comparator.comparingInt(o -> o.endTime));
-    final static List<Meet> meets = new ArrayList<>();
-
     public static void main(String[] args) throws IOException {
+        System.out.print(solution(initilizeMeetingList()));
+    }
+
+    private static List<Meeting> initilizeMeetingList() throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int roomCount = Integer.parseInt(bufferedReader.readLine());
+        int n = Integer.parseInt(bufferedReader.readLine());
+        List<Meeting> meetingList = new ArrayList<>();
 
-        for (int i = 0; i < roomCount; i++) {
-            int[] timeInfo = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            meets.add(new Meet(timeInfo[0], timeInfo[1]));
+        for (int i = 0; i < n; i++) {
+            int[] meetingInfo = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+            meetingList.add(new Meeting(meetingInfo[0], meetingInfo[1]));
+        }
+        return meetingList;
+    }
+
+    private static int solution(List<Meeting> meetingList) {
+        meetingList.sort(Comparator.comparingInt(o -> o.start));
+        PriorityQueue<Meeting> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o.end));
+
+        int count = 0;
+
+        for (Meeting meeting : meetingList) {
+            deleteNonOverlappingMeeting(meeting, priorityQueue);
+
+            priorityQueue.add(meeting);
+            count = Math.max(count, priorityQueue.size());
         }
 
-        Collections.sort(meets);
-        System.out.println(getMaxRoomCount());
+        return count;
     }
 
-    private static int getMaxRoomCount() {
-        int maxRoomCount = 0;
-        for (Meet meet : meets) {
-            while (!meetList.isEmpty() && meetList.peek().endTime <= meet.startTime) meetList.poll();
-            meetList.add(meet);
-            maxRoomCount = Math.max(maxRoomCount, meetList.size());
+    private static void deleteNonOverlappingMeeting(Meeting meeting, PriorityQueue<Meeting> priorityQueue) {
+        while (!priorityQueue.isEmpty() &&
+               priorityQueue.peek().end <= meeting.start) priorityQueue.poll();
+    }
+
+    static class Meeting {
+        int start;
+        int end;
+
+        public Meeting(int start, int end) {
+            this.start = start;
+            this.end = end;
         }
-        return maxRoomCount;
-    }
-
-}
-
-class Meet implements Comparable<Meet> {
-    public final int startTime;
-    public final int endTime;
-
-    public Meet(int startTime, int endTime) {
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
-
-    @Override
-    public int compareTo(Meet o) {
-        return this.startTime - o.startTime;
     }
 }
