@@ -1,7 +1,7 @@
 /*
  * sBAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 20116
+ * Problem Number: 20115
  * Cheat Level: 0
  * Algorithm: Greedy
  */
@@ -16,14 +16,9 @@ import java.util.Arrays;
 public class EnergyDrink {
 
     public static void main(String[] args) throws IOException {
-        System.out.println(solution(getEnergies()));
-    }
-
-    private static double[] getEnergies() throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         bufferedReader.readLine();
-
-        return Arrays.stream(bufferedReader.readLine().split(" ")).mapToDouble(Double::parseDouble).toArray();
+        System.out.println(solution(Arrays.stream(bufferedReader.readLine().split(" ")).mapToDouble(Double::parseDouble).toArray()));
     }
 
     private static double solution(double[] energies) {
