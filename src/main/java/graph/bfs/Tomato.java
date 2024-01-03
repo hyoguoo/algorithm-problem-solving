@@ -17,32 +17,30 @@ import java.util.Queue;
 
 public class Tomato {
 
-    final static Queue<Coordinate> ripenQueue = new LinkedList<>();
-    final static int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-    final static int TOMATO = 0;
-    final static int RIPEN = 1;
-    static int[][] board;
-    static int N, M;
+    static final int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    static final int EXIST = 0;
+    static final int RIPEN = 1;
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         int[] info = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        M = info[0];
-        N = info[1];
-        board = new int[N][M];
+        int m = info[0];
+        int n = info[1];
+        int[][] board = new int[n][m];
 
-        for (int n = 0; n < N; n++) {
+        Queue<Coordinate> ripenQueue = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
             int[] input = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            for (int m = 0; m < M; m++) {
-                if (input[m] == RIPEN) ripenQueue.add(new Coordinate(n, m));
-                board[n][m] = input[m];
+            for (int j = 0; j < m; j++) {
+                if (input[j] == RIPEN) ripenQueue.add(new Coordinate(i, j));
+                board[i][j] = input[j];
             }
         }
 
-        System.out.println(solution());
+        System.out.println(solution(board, ripenQueue));
     }
 
-    private static int solution() {
+    private static int solution(int[][] board, Queue<Coordinate> ripenQueue) {
         while (!ripenQueue.isEmpty()) {
             Coordinate current = ripenQueue.poll();
 
@@ -50,22 +48,23 @@ public class Tomato {
                 int nextN = current.n + direction[0];
                 int nextM = current.m + direction[1];
 
-                if (isInBound(nextN, nextM) && board[nextN][nextM] == TOMATO) {
-                    board[nextN][nextM] = board[current.n][current.m] + 1;
-                    ripenQueue.add(new Coordinate(nextN, nextM));
-                }
+                if (!isInBound(nextN, nextM, board) ||
+                    board[nextN][nextM] != EXIST) continue;
+
+                board[nextN][nextM] = board[current.n][current.m] + 1;
+                ripenQueue.add(new Coordinate(nextN, nextM));
             }
         }
 
-        return getMaxDay();
+        return getMaxDay(board);
     }
 
-    private static int getMaxDay() {
+    private static int getMaxDay(int[][] board) {
         int max = 0;
 
         for (int[] row : board) {
             for (int tomato : row) {
-                if (tomato == TOMATO) return -1;
+                if (tomato == EXIST) return -1;
                 max = Math.max(max, tomato);
             }
         }
@@ -73,12 +72,13 @@ public class Tomato {
         return max - 1;
     }
 
-    private static boolean isInBound(int n, int m) {
-        return 0 <= n && n < N && 0 <= m && m < M;
+    private static boolean isInBound(int n, int m, int[][] board) {
+        return 0 <= n && n < board.length && 0 <= m && m < board[0].length;
     }
 
     static class Coordinate {
-        int n, m;
+        int n;
+        int m;
 
         public Coordinate(int n, int m) {
             this.n = n;
