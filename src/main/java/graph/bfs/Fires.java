@@ -1,7 +1,7 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 4179
+ * Problem Number: 4179 / 5427
  * Cheat Level: 0
  * Algorithm: Graph / BFS
  */
@@ -20,14 +20,25 @@ public class Fires {
     static final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
     static final int[][] DIRECTIONS = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
     static final char WALL = '#';
-    static final char FIRE = 'F';
-    static final char ME = 'J';
+    static final char FIRE = '*';
+    static final char ME = '@';
     static final int NOT_EXIST = -1;
 
     public static void main(String[] args) throws IOException {
+        int testCase = Integer.parseInt(bufferedReader.readLine());
+        StringBuilder stringBuilder = new StringBuilder();
+
+        while (testCase-- > 0) {
+            stringBuilder.append(solution()).append("\n");
+        }
+
+        System.out.print(stringBuilder.toString().trim());
+    }
+
+    private static String solution() throws IOException {
         int[] info = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        int n = info[0];
-        int m = info[1];
+        int m = info[0];
+        int n = info[1];
 
         char[][] board = new char[n][m];
         int[][] fireDistance = new int[n][m];
@@ -40,9 +51,9 @@ public class Fires {
         fireSpread(fireQueue, n, m, fireDistance, board);
         int result = move(meQueue, n, m, meDistance, board, fireDistance);
 
-        System.out.println(result == -1
+        return result == -1
                 ? "IMPOSSIBLE"
-                : result);
+                : result + "";
     }
 
     private static void initialized(int n, int m, char[][] board, int[][] fireDistance, int[][] meDistance, Queue<Coordinate> fireQueue, Queue<Coordinate> meQueue) throws IOException {
