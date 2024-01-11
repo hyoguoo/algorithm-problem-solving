@@ -18,39 +18,46 @@ import java.util.regex.Pattern;
 
 public class HTMLParsing {
 
+    static final String DIV_TITLE_REGEX = "<div title=\"(.*?)\">(.*?)</div>";
+    static final String PARAGRAPH_REGEX = "<p>(.*?)</p>";
+    static final String MULTIPLE_SPACES_REGEX = "\\s{2,}";
+    static final String HTML_TAG_REGEX = "<.*?>";
+    static final String SINGLE_SPACE = " ";
+    static final String EMPTY = "";
+
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        String input = bufferedReader.readLine();
-        System.out.println(solution(input));
+        System.out.print(solution(bufferedReader.readLine()));
     }
 
     public static String solution(String input) {
         List<String> answer = new ArrayList<>();
 
-        Pattern divPattern = Pattern.compile("<div title=\"(.*?)\">(.*?)</div>");
-        Matcher divMatcher = divPattern.matcher(input);
+        Matcher titleMatcher = Pattern.compile(DIV_TITLE_REGEX)
+                .matcher(input);
 
-        while (divMatcher.find()) {
-            String title = divMatcher.group(1);
-            String divContent = divMatcher.group(2);
+        while (titleMatcher.find()) {
+            String title = titleMatcher.group(1);
+            String divContent = titleMatcher.group(2);
 
-            Pattern pPattern = Pattern.compile("<p>(.*?)</p>");
-            Matcher pMatcher = pPattern.matcher(divContent);
-            List<String> result = new ArrayList<>();
+            Matcher pMatcher = Pattern.compile(PARAGRAPH_REGEX)
+                    .matcher(divContent);
+            List<String> content = new ArrayList<>();
             while (pMatcher.find()) {
                 String p = pMatcher.group(1);
                 p = deleteTags(p);
-                p = p.replaceAll("\\s{2,}", " ");
-                result.add(p);
+                p = p.replaceAll(MULTIPLE_SPACES_REGEX, SINGLE_SPACE);
+                content.add(p);
             }
 
-            answer.add("title : " + title + "\n" + String.join("\n", result));
+            answer.add("title : " + title + "\n" +
+                       String.join("\n", content));
         }
 
         return String.join("\n", answer);
     }
 
     public static String deleteTags(String p) {
-        return p.replaceAll("<.*?>", "").trim();
+        return p.replaceAll(HTML_TAG_REGEX, EMPTY).trim();
     }
 }
