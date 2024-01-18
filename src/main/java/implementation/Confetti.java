@@ -1,9 +1,9 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 
- * Cheat Level: 
- * Algorithm: 
+ * Problem Number: 2563
+ * Cheat Level: 0
+ * Algorithm: Implementation
  */
 
 package implementation;
@@ -15,8 +15,8 @@ import java.util.Arrays;
 
 public class Confetti {
 
-    final static int CONFETTI_SIZE = 10;
-    final static int PAPER_SIZE = 100;
+    static final int CONFETTI_SIZE = 10;
+    static final int PAPER_SIZE = 100;
     static boolean[][] paper = new boolean[PAPER_SIZE][PAPER_SIZE];
 
     public static void main(String[] args) throws IOException {
