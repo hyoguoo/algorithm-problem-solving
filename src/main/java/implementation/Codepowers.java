@@ -3,7 +3,7 @@
  * https://www.acmicpc.net
  * Problem Number: 26007
  * Cheat Level: 0
- * Algorithm: Implementation
+ * Algorithm: Implementation / Prefix Sum
  */
 
 package implementation;
