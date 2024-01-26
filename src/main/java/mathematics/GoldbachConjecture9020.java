@@ -12,7 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class GoldbachConjecture {
+public class GoldbachConjecture9020 {
 
     final static int MAX = 10000;
     final static boolean[] IS_PRIME = new boolean[MAX + 1];
