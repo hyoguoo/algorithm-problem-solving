@@ -23,79 +23,84 @@ import java.util.Queue;
 
 public class BreakWallGo {
 
-    final static int[][] DIRECTIONS = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-    final static int WALL = -1;
-    final static int EMPTY = 0;
-    static int BREAK_LIMIT;
-    static int N, M;
-    static int[][][] map;
+    static final int[][] DIRECTIONS = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    static final int WALL = -1;
+    static final int EMPTY = 0;
+    static final int START_N = 0;
+    static final int START_M = 0;
+    static final int NOT_FOUND = -1;
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         int[] info = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        N = info[0];
-        M = info[1];
-        BREAK_LIMIT = info[2];
-        map = new int[BREAK_LIMIT + 1][N][M];
+        int n = info[0];
+        int m = info[1];
+        int breakLimit = info[2];
+        int[][][] map = new int[breakLimit + 1][n][m];
 
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i < n; i++) {
             String[] line = bufferedReader.readLine().split("");
-            for (int j = 0; j < M; j++) {
+            for (int j = 0; j < m; j++) {
                 int value = Integer.parseInt(line[j]);
                 if (value == 1) value = WALL;
-                for (int k = 0; k <= BREAK_LIMIT; k++) map[k][i][j] = value;
+                for (int k = 0; k <= breakLimit; k++) map[k][i][j] = value;
             }
         }
-        System.out.println(bfs());
+        System.out.println(bfs(map, n, m, breakLimit));
     }
 
-    private static int bfs() {
-        Queue<Point> queue = new LinkedList<>();
-        queue.add(new Point(0, 0, 0, 1));
+    private static int bfs(int[][][] map, int n, int m, int breakLimit) {
+        Queue<Coordinate> queue = new LinkedList<>();
+        queue.add(new Coordinate(START_N, START_M, 0, 1));
+
         map[0][0][0] = 1;
 
         while (!queue.isEmpty()) {
-            Point current = queue.poll();
-            int currentX = current.x;
-            int currentY = current.y;
-            int currentDepth = current.depth;
-            int currentDistance = current.distance;
-            if (currentX == N - 1 && currentY == M - 1) {
-                return currentDistance;
-            }
+            Coordinate current = queue.poll();
+
+            if (current.n == n - 1 && current.m == m - 1) return current.distance;
+
             for (int[] direction : DIRECTIONS) {
-                int nextX = currentX + direction[0];
-                int nextY = currentY + direction[1];
-                if (nextX < 0 || nextX >= N || nextY < 0 || nextY >= M) continue;
-                if (currentDepth < BREAK_LIMIT && map[currentDepth][nextX][nextY] == WALL) {
-                    for (int depth = currentDepth + 1; depth <= BREAK_LIMIT; depth++) {
-                        if (map[depth][nextX][nextY] == WALL) {
-                            map[depth][nextX][nextY] = currentDistance + 1;
-                            queue.add(new Point(nextX, nextY, depth, currentDistance + 1));
+                int nextN = current.n + direction[0];
+                int nextM = current.m + direction[1];
+
+                if (!isInBound(n, m, nextN, nextM)) continue;
+
+                if (current.depth < breakLimit &&
+                    map[current.depth][nextN][nextM] == WALL) {
+                    for (int depth = current.depth + 1; depth <= breakLimit; depth++) {
+                        if (map[depth][nextN][nextM] == WALL) {
+                            map[depth][nextN][nextM] = current.distance + 1;
+                            queue.add(new Coordinate(nextN, nextM, depth, current.distance + 1));
                         }
                     }
                 }
-                if (map[currentDepth][nextX][nextY] == EMPTY) {
-                    for (int depth = currentDepth; depth <= BREAK_LIMIT; depth++) {
-                        map[depth][nextX][nextY] = currentDistance + 1;
+
+                if (map[current.depth][nextN][nextM] == EMPTY) {
+                    for (int depth = current.depth; depth <= breakLimit; depth++) {
+                        map[depth][nextN][nextM] = current.distance + 1;
                     }
-                    queue.add(new Point(nextX, nextY, currentDepth, currentDistance + 1));
+                    queue.add(new Coordinate(nextN, nextM, current.depth, current.distance + 1));
                 }
             }
         }
 
-        return -1;
+        return NOT_FOUND;
     }
 
-    static class Point {
-        int x;
-        int y;
+    private static boolean isInBound(int limitN, int limitM, int n, int m) {
+        return 0 <= n && n < limitN && 0 <= m && m < limitM;
+    }
+
+    static class Coordinate {
+        int n;
+        int m;
         int depth;
         int distance;
 
-        Point(int x, int y, int depth, int distance) {
-            this.x = x;
-            this.y = y;
+        public Coordinate(int n, int m, int depth, int distance) {
+            this.n = n;
+            this.m = m;
             this.depth = depth;
             this.distance = distance;
         }
