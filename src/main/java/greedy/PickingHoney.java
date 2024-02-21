@@ -34,18 +34,10 @@ public class PickingHoney {
         int result = 0;
 
         for (int i = 1; i < length - 1; i++) {
-            int tmp = sum[length - 1] - honey[0] - honey[i] + sum[length - 1] - sum[i];
-            result = Math.max(result, tmp);
-        }
-
-        for (int i = 1; i < length - 1; i++) {
-            int tmp = sum[length - 2] - sum[i - 1] + sum[i] - sum[0];
-            result = Math.max(result, tmp);
-        }
-
-        for (int i = 1; i < length - 1; i++) {
-            int tmp = sum[length - 2] - honey[i] + sum[i - 1];
-            result = Math.max(result, tmp);
+            int case1 = sum[length - 1] - honey[0] - honey[i] + sum[length - 1] - sum[i];
+            int case2 = sum[length - 2] - sum[i - 1] + sum[i] - sum[0];
+            int case3 = sum[length - 2] - honey[i] + sum[i - 1];
+            result = Math.max(result, Math.max(case1, Math.max(case2, case3)));
         }
 
         return result;
