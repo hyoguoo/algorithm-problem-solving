@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class Cheese {
+public class Cheese2638 {
 
     final static int CHEESE = 1;
     final static int AIR = 0;

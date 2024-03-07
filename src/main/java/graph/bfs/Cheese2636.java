@@ -6,7 +6,7 @@
  * Algorithm: Graph / BFS
  */
 
-package graph;
+package graph.bfs;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class Cheese {
+public class Cheese2636 {
 
     static final int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
     static final int EXIST = 1;

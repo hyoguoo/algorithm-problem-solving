@@ -6,7 +6,7 @@
  * Algorithm: Graph / DFS
  */
 
-package graph;
+package graph.dfs;
 
 import java.io.BufferedReader;
 import java.io.IOException;
