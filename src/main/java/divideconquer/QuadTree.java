@@ -11,51 +11,56 @@ package divideconquer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.stream.IntStream;
 
 public class QuadTree {
 
+    static final char OPEN_PARENTHESIS = '(';
+    static final char CLOSE_PARENTHESIS = ')';
     static final StringBuilder stringBuilder = new StringBuilder();
-    static int N;
-    static boolean[][] matrix;
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        N = Integer.parseInt(bufferedReader.readLine());
-        matrix = new boolean[N][N];
+        int n = Integer.parseInt(bufferedReader.readLine());
+        char[][] matrix = new char[n][n];
 
-        for (int i = 0; i < N; i++) {
-            String[] input = bufferedReader.readLine().split("");
-            for (int j = 0; j < N; j++) matrix[i][j] = input[j].equals("1");
+        for (int i = 0; i < n; i++) {
+            matrix[i] = bufferedReader.readLine().toCharArray();
         }
 
-        recursion(0, 0, N);
+        solution(matrix, 0, 0, n);
         System.out.println(stringBuilder);
     }
 
-    private static void recursion(int x, int y, int length) {
-        if (checkIsCompleted(x, y, length)) {
-            boolean reference = matrix[x][y];
-            stringBuilder.append(reference ? "1" : "0");
-            return;
-        }
-        length /= 2;
-        stringBuilder.append("(");
-        if (length == 0) recursion(x, y, length);
-        recursion(x, y, length);
-        recursion(x, y + length, length);
-        recursion(x + length, y, length);
-        recursion(x + length, y + length, length);
-        stringBuilder.append(")");
-
+    private static void solution(char[][] matrix, int n, int m, int length) {
+        recursion(matrix, n, m, length);
     }
 
-    private static boolean checkIsCompleted(int x, int y, int length) {
-        boolean reference = matrix[x][y];
-        for (int i = x; i < x + length; i++) {
-            for (int j = y; j < y + length; j++) {
-                if (matrix[i][j] != reference) return false;
-            }
+    private static void recursion(char[][] matrix, int n, int m, int length) {
+        if (checkIsCompleted(matrix, n, m, length)) {
+            stringBuilder.append(matrix[n][m]);
+            return;
         }
-        return true;
+
+        length /= 2;
+        stringBuilder.append(OPEN_PARENTHESIS);
+        if (length == 0) {
+            solution(matrix, n, m, length);
+        }
+
+        solution(matrix, n, m, length);
+        solution(matrix, n, m + length, length);
+        solution(matrix, n + length, m, length);
+        solution(matrix, n + length, m + length, length);
+
+        stringBuilder.append(CLOSE_PARENTHESIS);
+    }
+
+    private static boolean checkIsCompleted(char[][] matrix, int n, int m, int length) {
+        char reference = matrix[n][m];
+
+        return IntStream.range(n, n + length)
+                .allMatch(i -> IntStream.range(m, m + length)
+                        .allMatch(j -> matrix[i][j] == reference));
     }
 }
