@@ -11,9 +11,9 @@ package mathematics;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NumberCombinationZeros {
 
@@ -32,22 +32,24 @@ public class NumberCombinationZeros {
     }
 
     private static long solution(long n, long m) {
-        List<Long> result = new ArrayList<>();
-
-        for (Integer num : TEN_MEAURES) {
-            result.add(count(n, num) - count(m, num) - count(n - m, num));
-        }
-
-        return result.stream()
+        return TEN_MEAURES.stream()
+                .map(
+                        num ->
+                                getMultiplyCount(n, num)
+                                        - getMultiplyCount(m, num)
+                                        - getMultiplyCount(n - m, num)
+                )
+                .collect(Collectors.toList()).stream()
                 .min(Long::compareTo)
                 .orElse(0L);
     }
 
-    private static long count(long n, long k) {
+    private static long getMultiplyCount(long n, long k) {
         long count = 0;
 
-        for (long i = k; i <= n; i *= k) {
-            count += n / i;
+        while (k <= n) {
+            count += n / k;
+            n /= k;
         }
 
         return count;
