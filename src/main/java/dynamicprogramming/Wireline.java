@@ -3,10 +3,10 @@
  * https://www.acmicpc.net
  * Problem Number: 2565
  * Cheat Level: 1
- * Algorithm:
+ * Algorithm: Dynamic Programming
  */
 
-package _test;
+package dynamicprogramming;
 
 import java.io.BufferedReader;
 import java.io.IOException;
