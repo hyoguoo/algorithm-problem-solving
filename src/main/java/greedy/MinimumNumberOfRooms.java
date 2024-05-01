@@ -11,33 +11,30 @@ package greedy;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class MinimumNumberOfRooms {
 
     public static void main(String[] args) throws IOException {
-        System.out.print(solution(initilizeMeetingList()));
+        Meeting[] meetings = parseMeetings();
+
+        System.out.print(solution(meetings));
     }
 
-    private static List<Meeting> initilizeMeetingList() throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(bufferedReader.readLine());
-        List<Meeting> meetingList = new ArrayList<>();
-
-        for (int i = 0; i < n; i++) {
-            int[] meetingInfo = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            meetingList.add(new Meeting(meetingInfo[0], meetingInfo[1]));
-        }
-        return meetingList;
-    }
-
-    private static int solution(List<Meeting> meetingList) {
-        meetingList.sort(Comparator.comparingInt(o -> o.start));
-        PriorityQueue<Meeting> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o.end));
+    private static int solution(Meeting[] meetings) {
+        Arrays.sort(
+                meetings,
+                Comparator.comparingInt(o -> o.start)
+        );
+        PriorityQueue<Meeting> priorityQueue = new PriorityQueue<>(
+                Comparator.comparingInt(o -> o.end)
+        );
 
         int count = 0;
 
-        for (Meeting meeting : meetingList) {
+        for (Meeting meeting : meetings) {
             deleteNonOverlappingMeeting(meeting, priorityQueue);
 
             priorityQueue.add(meeting);
@@ -47,14 +44,37 @@ public class MinimumNumberOfRooms {
         return count;
     }
 
-    private static void deleteNonOverlappingMeeting(Meeting meeting, PriorityQueue<Meeting> priorityQueue) {
+    private static void deleteNonOverlappingMeeting(
+            Meeting meeting,
+            PriorityQueue<Meeting> priorityQueue
+    ) {
         while (!priorityQueue.isEmpty() &&
-               priorityQueue.peek().end <= meeting.start) priorityQueue.poll();
+                priorityQueue.peek().end <= meeting.start) {
+            priorityQueue.poll();
+        }
+    }
+
+
+    private static Meeting[] parseMeetings() throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        int meetingCount = Integer.parseInt(bufferedReader.readLine());
+
+        Meeting[] meetings = new Meeting[meetingCount];
+
+        while (meetingCount-- > 0) {
+            int[] meetingInfo = Arrays.stream(bufferedReader.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            meetings[meetingCount] = new Meeting(meetingInfo[0], meetingInfo[1]);
+        }
+
+        return meetings;
     }
 
     static class Meeting {
-        int start;
-        int end;
+
+        private final int start;
+        private final int end;
 
         public Meeting(int start, int end) {
             this.start = start;
