@@ -2,7 +2,7 @@
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
  * Problem Number: 14500
- * Cheat Level: 1
+ * Cheat Level: 0
  * Algorithm: Brute Force / Backtracking
  */
 
@@ -15,66 +15,115 @@ import java.util.Arrays;
 
 public class Tetromino {
 
-    static int M;
-    static int N;
-    static int[][] scores;
-    static boolean[][] visit;
-    static int maxScore = Integer.MIN_VALUE;
-    static int[] dx = {0, 0, 1, -1};
-    static int[] dy = {1, -1, 0, 0};
+    private static final int LIMIT = 4;
+    private static final int[][] DIRECTIONS = {
+            {0, 1},
+            {1, 0},
+            {0, -1},
+            {-1, 0}
+    };
+    private static int max = 0;
 
     public static void main(String[] args) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int[] info = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        M = info[0];
-        N = info[1];
-        scores = new int[M][N];
-        visit = new boolean[M][N];
-        for (int i = 0; i < M; i++) {
-            scores[i] = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        }
+        int[][] board = parseBoard();
 
-        for (int x = 0; x < M; x++) {
-            for (int y = 0; y < N; y++) {
-                getTShapeMaxScore(x, y);
-                getBfsShapeMaxScore(x, y, 0, 0);
+        System.out.print(solution(board));
+    }
+
+    private static int solution(int[][] board) {
+        boolean[][] visited = new boolean[board.length][board[0].length];
+
+        for (int n = 0; n < board.length; n++) {
+            for (int m = 0; m < board[0].length; m++) {
+                visited[n][m] = true;
+                dfs(board, n, m, 1, board[n][m], visited);
+                visited[n][m] = false;
             }
         }
 
-        System.out.println(maxScore);
+        return max;
     }
 
-    private static void getBfsShapeMaxScore(int x, int y, int score, int count) {
-        if (count == 4) {
-            maxScore = Math.max(maxScore, score);
+    private static void dfs(
+            int[][] board,
+            int currentN,
+            int currentM,
+            int count,
+            int sum,
+            boolean[][] visited
+    ) {
+        if (count == LIMIT) {
+            max = Math.max(max, sum);
             return;
         }
 
-        for (int i = 0; i < 4; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-            if (nx < 0 || nx >= M || ny < 0 || ny >= N) continue;
-            if (visit[nx][ny]) continue;
-            visit[nx][ny] = true;
-            getBfsShapeMaxScore(nx, ny, score + scores[nx][ny], count + 1);
-            visit[nx][ny] = false;
+        if (count == 2) {
+            max = Math.max(
+                    max,
+                    sum + calculateSumOfThree(board, currentN, currentM, visited)
+            );
+        }
+
+        for (int[] direction : DIRECTIONS) {
+            int nextN = currentN + direction[0];
+            int nextM = currentM + direction[1];
+
+            if (isInBound(board, nextN, nextM) && !visited[nextN][nextM]) {
+                visited[nextN][nextM] = true;
+                dfs(board, nextN, nextM, count + 1, sum + board[nextN][nextM], visited);
+                visited[nextN][nextM] = false;
+            }
         }
     }
 
-    private static void getTShapeMaxScore(int x, int y) {
-        int score = scores[x][y];
-        int count = 1;
-        for (int d = 0; d < 4; d++) {
-            int nextX = x + dx[d];
-            int nextY = y + dy[d];
-            if (nextX < 0 || nextX >= M || nextY < 0 || nextY >= N) continue;
-            score += scores[nextX][nextY];
-            count++;
+    private static int calculateSumOfThree(
+            int[][] board,
+            int currentN,
+            int currentM,
+            boolean[][] visited
+    ) {
+        int sumOfThree = 0;
+        int min = Integer.MAX_VALUE;
+        int countOfThree = 0;
+
+        for (int[] direction : DIRECTIONS) {
+            int nextN = currentN + direction[0];
+            int nextM = currentM + direction[1];
+
+            if (isInBound(board, nextN, nextM) && !visited[nextN][nextM]) {
+                sumOfThree += board[nextN][nextM];
+                min = Math.min(min, board[nextN][nextM]);
+                countOfThree++;
+            }
         }
 
-        if (count == 5) {
-            score -= Math.min(Math.min(scores[x + 1][y], scores[x - 1][y]), Math.min(scores[x][y + 1], scores[x][y - 1]));
+        if (countOfThree == 2) {
+            return sumOfThree;
+        } else {
+            return sumOfThree - min;
         }
-        maxScore = Math.max(maxScore, score);
+    }
+
+    private static boolean isInBound(int[][] board, int n, int m) {
+        return 0 <= n && n < board.length &&
+                0 <= m && m < board[0].length;
+    }
+
+    private static int[][] parseBoard() throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        int[] info = Arrays.stream(bufferedReader.readLine().split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        int sizeN = info[0];
+        int sizeM = info[1];
+        int[][] board = new int[sizeN][sizeM];
+
+        for (int n = 0; n < sizeN; n++) {
+            board[n] = Arrays.stream(bufferedReader.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+        }
+
+        return board;
     }
 }
