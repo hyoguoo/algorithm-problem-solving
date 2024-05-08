@@ -6,7 +6,7 @@
  * Algorithm: Implementation / Simulation
  */
 
-package implementation;
+package implementation.simulation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
