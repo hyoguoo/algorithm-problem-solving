@@ -3,10 +3,10 @@
  * https://www.acmicpc.net
  * Problem Number: 30804
  * Cheat Level: 0
- * Algorithm: Implementation
+ * Algorithm: Implementation / Two Pointer
  */
 
-package _test;
+package twopointer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
