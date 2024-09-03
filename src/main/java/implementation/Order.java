@@ -58,8 +58,3 @@ public class Order {
         return availableNumberList;
     }
 }
-
-/*
-0 0 0 2 0 1 6 7 6 9
-6 4 3 5 1 2 8 9 7 10
- */
