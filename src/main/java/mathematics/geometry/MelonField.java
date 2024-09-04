@@ -9,82 +9,110 @@
 package mathematics.geometry;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 public class MelonField {
 
-    final static int LINE_COUNT = 6;
-    final static Deque<Line> lines = new ArrayDeque<>();
-    static int melonsPerSquareMeter;
-    static int maximumWidthDistance = 0;
-    static int maximumHeightDistance = 0;
+    private static final int LINE_COUNT = 6;
 
     public static void main(String[] args) throws Exception {
-        init();
-        System.out.println(solution());
-    }
-
-    private static int solution() {
-        int equalDirectionsCount = 0;
-        int partialWidth;
-        int partialHeight;
-
-        while (true) {
-            Line currentLine = lines.pollFirst();
-            Line nextLine = getNthElement(lines, 1);
-
-            if (currentLine.direction == nextLine.direction) {
-                equalDirectionsCount++;
-                if (equalDirectionsCount == 2) {
-                    partialWidth = currentLine.distance;
-                    partialHeight = lines.peek().distance;
-                    break;
-                }
-            } else {
-                equalDirectionsCount = 0;
-            }
-            lines.addLast(currentLine);
-        }
-
-        return (maximumWidthDistance * maximumHeightDistance - partialWidth * partialHeight) * melonsPerSquareMeter;
-    }
-
-    public static <T> T getNthElement(Deque<T> deque, int index) {
-        if (index >= 0 && index < deque.size()) return new ArrayList<>(deque).get(index);
-        else return null;
-    }
-
-    private static void init() throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        melonsPerSquareMeter = Integer.parseInt(bufferedReader.readLine());
+
+        int melonsPerSquareMeter = Integer.parseInt(bufferedReader.readLine());
+
+        Line[] lines = new Line[LINE_COUNT];
         for (int i = 0; i < LINE_COUNT; i++) {
-            int[] lineInfo = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            Direction direction = Direction.values()[lineInfo[0] - 1];
-            updateMaxDistances(direction, lineInfo[1]);
-            lines.add(new Line(direction, lineInfo[1]));
+            int[] lineInfo = Arrays.stream(bufferedReader.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            lines[i] = new Line(Direction.of(lineInfo[0]), lineInfo[1]);
         }
+
+        System.out.print(solution(lines, melonsPerSquareMeter));
     }
 
-    private static void updateMaxDistances(Direction direction, int distance) {
-        if (direction == Direction.EAST || direction == Direction.WEST) {
-            maximumWidthDistance = Math.max(maximumWidthDistance, distance);
-        } else {
-            maximumHeightDistance = Math.max(maximumHeightDistance, distance);
-        }
+    private static int solution(Line[] lines, int melonsPerSquareMeter) {
+        return calculateArea(lines) * melonsPerSquareMeter;
+    }
+
+    private static int calculateArea(Line[] lines) {
+        Pair maxVertical = getMaxLengthInfo(lines, List.of(Direction.NORTH, Direction.SOUTH));
+        Pair maxHorizontal = getMaxLengthInfo(lines, List.of(Direction.EAST, Direction.WEST));
+
+        int partialArea = calculatePartialArea(lines, maxVertical, maxHorizontal);
+
+        return maxHorizontal.distance * maxVertical.distance - partialArea;
+    }
+
+    private static Pair getMaxLengthInfo(Line[] lines, List<Direction> directions) {
+        return Arrays.stream(lines)
+                .filter(line -> directions.contains(line.direction))
+                .max(Comparator.comparingInt(line -> line.distance))
+                .map(line -> new Pair(Arrays.asList(lines).indexOf(line), line.distance))
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private static int calculatePartialArea(Line[] lines, Pair maxVertical, Pair maxHorizontal) {
+        int verticalLeftIndex = getLeftIndex(maxVertical.index, lines.length);
+        int verticalRightIndex = getRightIndex(maxVertical.index, lines.length);
+        int horizontalLeftIndex = getLeftIndex(maxHorizontal.index, lines.length);
+        int horizontalRightIndex = getRightIndex(maxHorizontal.index, lines.length);
+
+        int partialVertical = Math.abs(lines[verticalLeftIndex].distance - lines[verticalRightIndex].distance);
+        int partialHorizontal = Math.abs(lines[horizontalLeftIndex].distance - lines[horizontalRightIndex].distance);
+
+        return partialVertical * partialHorizontal;
+    }
+
+    private static int getLeftIndex(int index, int length) {
+        return (index - 1 + length) % length;
+    }
+
+    private static int getRightIndex(int index, int length) {
+        return (index + 1) % length;
     }
 
     enum Direction {
-        EAST, WEST, SOUTH, NORTH
+        EAST(1),
+        WEST(2),
+        SOUTH(3),
+        NORTH(4);
+
+        private final int value;
+
+        Direction(int value) {
+            this.value = value;
+        }
+
+        public static Direction of(int value) {
+            return Arrays.stream(values())
+                    .filter(direction -> direction.value == value)
+                    .findFirst()
+                    .orElseThrow(IllegalArgumentException::new);
+        }
     }
 
     static class Line {
-        Direction direction;
-        int distance;
+
+        private final Direction direction;
+        private final int distance;
 
         public Line(Direction direction, int distance) {
             this.direction = direction;
+            this.distance = distance;
+        }
+    }
+
+    static class Pair {
+
+        private final int index;
+        private final int distance;
+
+        public Pair(int index, int distance) {
+            this.index = index;
             this.distance = distance;
         }
     }
