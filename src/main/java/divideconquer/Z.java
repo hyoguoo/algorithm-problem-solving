@@ -17,25 +17,69 @@ public class Z {
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int[] infos = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+        int[] info = Arrays.stream(bufferedReader.readLine().split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
 
-        System.out.println(recursion(infos[1], infos[2], infos[0], 0));
+        Point point = new Point(info[1], info[2]);
+
+        System.out.print(solution(point, info[0]));
     }
 
-    private static int getQuadrant(float x, float y, int N) {
-        int mid = N / 2;
-        if (x < mid && y < mid) return 0;
-        else if (x < mid && y >= mid) return 1;
-        else if (x >= mid && y < mid) return 2;
-        else return 3;
+    private static int solution(Point point, int exponent) {
+        int matrixSize = (int) Math.pow(2, exponent);
+
+        return recursive(point, matrixSize, 0);
     }
 
-    private static int recursion(float c, float r, int division, int result) {
-        int quadrant = getQuadrant(c, r, (int) Math.pow(2, division));
-        if (division == 1) return result + quadrant;
+    private static int recursive(Point currentPoint, int matrixSize, int accumulatedValue) {
+        if (matrixSize == 1) {
+            return accumulatedValue;
+        }
 
-        int calculateSum = (int) Math.pow(2, (division - 1) * 2) * quadrant;
-        int half = (int) Math.pow(2, division - 1);
-        return recursion(c % half, r % half, division - 1, result + calculateSum);
+        int halfSize = matrixSize / 2;
+        int quadrant = calculateQuadrant(currentPoint, halfSize);
+
+        int cellsInQuadrant = (int) Math.pow(halfSize, 2);
+        int quadrantValue = cellsInQuadrant * quadrant;
+
+        return recursive(
+                currentPoint.nextPoint(quadrant, halfSize),
+                halfSize,
+                accumulatedValue + quadrantValue
+        );
+    }
+
+    private static int calculateQuadrant(Point point, int halfSize) {
+        int rowQuadrant = (point.n >= halfSize) ? 2 : 0;
+        int colQuadrant = (point.m >= halfSize) ? 1 : 0;
+
+        return rowQuadrant + colQuadrant;
+    }
+
+    static class Point {
+
+        private final int n;
+        private final int m;
+
+        public Point(int n, int m) {
+            this.n = n;
+            this.m = m;
+        }
+
+        public Point nextPoint(int quadrant, int halfSize) {
+            switch (quadrant) {
+                case 0:
+                    return new Point(n, m);
+                case 1:
+                    return new Point(n, m - halfSize);
+                case 2:
+                    return new Point(n - halfSize, m);
+                case 3:
+                    return new Point(n - halfSize, m - halfSize);
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
     }
 }
