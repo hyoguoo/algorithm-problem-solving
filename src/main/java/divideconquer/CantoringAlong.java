@@ -15,6 +15,10 @@ import java.util.Arrays;
 
 public class CantoringAlong {
 
+    private static final char DASH = '-';
+    private static final char SPACE = ' ';
+    private static final int BASE = 3;
+
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder stringBuilder = new StringBuilder();
@@ -31,31 +35,37 @@ public class CantoringAlong {
         System.out.print(stringBuilder.toString().trim());
     }
 
-    public static String solution(int n) {
-        if (n == 0) {
-            return "-";
+    public static String solution(int exponent) {
+        if (exponent == 0) {
+            return String.valueOf(DASH);
         }
 
-        int length = (int) Math.pow(3, n);
+        int length = (int) Math.pow(BASE, exponent);
         char[] cantor = new char[length];
-        Arrays.fill(cantor, '-');
+        Arrays.fill(cantor, DASH);
 
-        cantoring(cantor, 0, length, n);
+        createCantorSet(cantor, 0, length, exponent);
 
         return new String(cantor);
     }
 
-    public static void cantoring(char[] cantor, int start, int length, int n) {
-        if (n == 0) {
+    public static void createCantorSet(
+            char[] cantor,
+            int currentIndex,
+            int sectionLength,
+            int exponent
+    ) {
+        if (exponent == 0) {
             return;
         }
 
-        int third = length / 3;
-        for (int i = start + third; i < start + 2 * third; i++) {
-            cantor[i] = ' ';
-        }
+        int divisionLength = sectionLength / BASE;
+        int middleSectionStart = currentIndex + divisionLength;
+        int middleSectionEnd = currentIndex + (BASE - 1) * divisionLength;
 
-        cantoring(cantor, start, third, n - 1);
-        cantoring(cantor, start + 2 * third, third, n - 1);
+        Arrays.fill(cantor, middleSectionStart, middleSectionEnd, SPACE);
+
+        createCantorSet(cantor, currentIndex, divisionLength, exponent - 1);
+        createCantorSet(cantor, middleSectionEnd, divisionLength, exponent - 1);
     }
 }
