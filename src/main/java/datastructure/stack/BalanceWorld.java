@@ -11,36 +11,61 @@ package datastructure.stack;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class BalanceWorld {
 
     private static final String EXIT = ".";
+    private static final char OPEN = '(';
+    private static final char CLOSE = ')';
+    private static final char OPEN_BRACKET = '[';
+    private static final char CLOSE_BRACKET = ']';
+    private static final String BRACKET_FILTER_REGEX = String.format("[^\\%c\\%c\\%c\\%c]",
+            OPEN, CLOSE, OPEN_BRACKET, CLOSE_BRACKET);
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+
+        StringBuilder stringBuilder = new StringBuilder();
+
         while (true) {
             String input = bufferedReader.readLine();
-            if (input.equals(EXIT)) break;
-            System.out.println(isBalanced(input) ? "yes" : "no");
+            if (input.equals(EXIT)) {
+                break;
+            }
+            stringBuilder.append(solution(input) ? "yes" : "no").append("\n");
         }
+
+        System.out.print(stringBuilder.toString().trim());
     }
 
-    private static boolean isBalanced(String input) {
-        String bracket = input.replaceAll("[^\\[\\]()]", "");
-        Stack<Character> stack = new Stack<>();
+    private static boolean solution(String input) {
+        String bracket = filterBrackets(input);
+        Deque<Character> deque = new ArrayDeque<>();
 
-        for (int i = 0; i < bracket.length(); i++) {
-            char current = bracket.charAt(i);
-            if (current == '(' || current == '[') stack.push(current);
-            else {
-                if (stack.isEmpty()) return false;
-                char top = stack.pop();
-                if (current == ')' && top != '(') return false;
-                if (current == ']' && top != '[') return false;
+        for (char current : bracket.toCharArray()) {
+            if (isOpenBracket(current)) {
+                deque.push(current);
+            } else if (deque.isEmpty() ||
+                    !isMatchingPair(deque.pop(), current)) {
+                return false;
             }
         }
 
-        return stack.isEmpty();
+        return deque.isEmpty();
+    }
+
+    private static boolean isOpenBracket(char c) {
+        return c == OPEN || c == OPEN_BRACKET;
+    }
+
+    private static boolean isMatchingPair(char open, char close) {
+        return (open == OPEN && close == CLOSE) ||
+                (open == OPEN_BRACKET && close == CLOSE_BRACKET);
+    }
+
+    private static String filterBrackets(String input) {
+        return input.replaceAll(BRACKET_FILTER_REGEX, "");
     }
 }
