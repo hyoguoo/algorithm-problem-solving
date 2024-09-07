@@ -12,96 +12,160 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Deque;
+import java.util.Optional;
 
 public class DequeProblem {
 
-    static final String PUSH_FRONT = "push_front";
-    static final String PUSH_BACK = "push_back";
-    static final String POP_FRONT = "pop_front";
-    static final String POP_BACK = "pop_back";
-    static final String SIZE = "size";
-    static final String EMPTY = "empty";
-    static final String FRONT = "front";
-    static final String BACK = "back";
-
-
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int length = Integer.parseInt(bufferedReader.readLine());
+        int queryCount = Integer.parseInt(bufferedReader.readLine());
+        Query[] queries = new Query[queryCount];
 
-        DequeImpl queueImpl = new DequeImpl();
+        for (int i = 0; i < queryCount; i++) {
+            queries[i] = Query.of(bufferedReader.readLine());
+        }
 
-        for (int i = 0; i < length; i++) {
-            String[] actions = bufferedReader.readLine().split(" ");
-            String action = actions[0];
-            switch (action) {
-                case PUSH_FRONT:
-                    queueImpl.pushFront(Integer.parseInt(actions[1]));
-                    break;
-                case PUSH_BACK:
-                    queueImpl.pushBack(Integer.parseInt(actions[1]));
-                    break;
-                case POP_FRONT:
-                    System.out.println(queueImpl.popFront());
-                    break;
-                case POP_BACK:
-                    System.out.println(queueImpl.popBack());
-                    break;
-                case SIZE:
-                    System.out.println(queueImpl.size());
-                    break;
-                case EMPTY:
-                    System.out.println(queueImpl.empty());
-                    break;
-                case FRONT:
-                    System.out.println(queueImpl.front());
-                    break;
-                case BACK:
-                    System.out.println(queueImpl.back());
-                    break;
-            }
+        System.out.print(solution(queries));
+    }
+
+    private static String solution(Query[] queries) {
+        StringBuilder result = new StringBuilder();
+        CommandDeque commandDeque = new CommandDeque();
+
+        Arrays.stream(queries)
+                .forEach(
+                        query -> commandDeque
+                                .executeQuery(query)
+                                .ifPresent(e -> result.append(e).append("\n"))
+                );
+
+        return result.toString().trim();
+    }
+
+    enum Command {
+        PUSH_FRONT("push_front"),
+        PUSH_BACK("push_back"),
+        POP_FRONT("pop_front"),
+        POP_BACK("pop_back"),
+        SIZE("size"),
+        EMPTY("empty"),
+        FRONT("front"),
+        BACK("back");
+
+        private final String value;
+
+        Command(String value) {
+            this.value = value;
+        }
+
+        public static Command of(String value) {
+            return Arrays.stream(values())
+                    .filter(command -> command.value.equals(value))
+                    .findFirst()
+                    .orElseThrow(IllegalArgumentException::new);
         }
     }
-}
 
+    static class CommandDeque {
 
-class DequeImpl {
-    Deque<Integer> deque;
+        private static final int NO_DATA = -1;
+        private static final int EMPTY = 1;
+        private static final int NOT_EMPTY = 0;
+        private final Deque<Integer> deque;
 
-    public DequeImpl() {
-        this.deque = new ArrayDeque<>();
+        public CommandDeque() {
+            this.deque = new ArrayDeque<>();
+        }
+
+        public Optional<Integer> executeQuery(Query query) {
+            switch (query.command) {
+                case PUSH_FRONT:
+                    pushFront(query.value);
+                    return Optional.empty();
+                case PUSH_BACK:
+                    pushBack(query.value);
+                    return Optional.empty();
+                case POP_FRONT:
+                    return Optional.of(popFront());
+                case POP_BACK:
+                    return Optional.of(popBack());
+                case SIZE:
+                    return Optional.of(size());
+                case EMPTY:
+                    return Optional.of(empty());
+                case FRONT:
+                    return Optional.of(front());
+                case BACK:
+                    return Optional.of(back());
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+
+        private void pushFront(int value) {
+            deque.addFirst(value);
+        }
+
+        private void pushBack(int value) {
+            deque.addLast(value);
+        }
+
+        private int popFront() {
+            return deque.isEmpty()
+                    ? NO_DATA
+                    : deque.removeFirst();
+        }
+
+        private int popBack() {
+            return deque.isEmpty()
+                    ? NO_DATA
+                    : deque.removeLast();
+        }
+
+        private int size() {
+            return deque.size();
+        }
+
+        private int empty() {
+            return deque.isEmpty()
+                    ? EMPTY
+                    : NOT_EMPTY;
+        }
+
+        private int front() {
+            return deque.isEmpty()
+                    ? NO_DATA
+                    : deque.getFirst();
+        }
+
+        private int back() {
+            return deque.isEmpty()
+                    ? NO_DATA
+                    : deque.getLast();
+        }
     }
 
-    public void pushFront(int value) {
-        this.deque.addFirst(value);
-    }
+    static class Query {
 
-    public void pushBack(int value) {
-        this.deque.addLast(value);
-    }
+        private final Command command;
+        private final Integer value;
 
-    public int popFront() {
-        return this.deque.isEmpty() ? -1 : this.deque.removeFirst();
-    }
+        public Query(Command command, Integer value) {
+            this.command = command;
+            this.value = value;
+        }
 
-    public int popBack() {
-        return this.deque.isEmpty() ? -1 : this.deque.removeLast();
-    }
+        public static Query of(String queryString) {
+            String[] split = queryString.split(" ");
+            Command command = Command.of(split[0]);
 
-    public int size() {
-        return this.deque.size();
-    }
+            Integer value = split.length > 1
+                    ? Integer.parseInt(split[1])
+                    : null;
 
-    public int empty() {
-        return this.deque.isEmpty() ? 1 : 0;
-    }
-
-    public int front() {
-        return this.deque.isEmpty() ? -1 : this.deque.getFirst();
-    }
-
-    public int back() {
-        return this.deque.isEmpty() ? -1 : this.deque.getLast();
+            return new Query(command, value);
+        }
     }
 }
