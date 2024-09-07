@@ -11,45 +11,41 @@ package datastructure.stack;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
 
 public class GoodWord {
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int length = Integer.parseInt(bufferedReader.readLine());
 
-        int count = 0;
-        for (int i = 0; i < length; i++) {
-            String input = bufferedReader.readLine();
-            if (solution(input)) count++;
+        int wordCount = Integer.parseInt(bufferedReader.readLine());
+        String[] words = new String[wordCount];
+        for (int i = 0; i < wordCount; i++) {
+            words[i] = bufferedReader.readLine();
         }
-        System.out.println(count);
+
+        System.out.print(solution(words));
     }
 
-    private static boolean solution(String input) {
-        Stack<Character> stack = new Stack<>();
+    private static long solution(String[] words) {
+        return Arrays.stream(words)
+                .filter(GoodWord::isGoodWord)
+                .count();
+    }
 
-        for (int i = 0; i < input.length(); i++) {
-            char current = input.charAt(i);
-            if (stack.isEmpty()) stack.push(current);
-            else {
-                if (stack.peek() == current) stack.pop();
-                else stack.push(current);
+    private static boolean isGoodWord(String word) {
+        Deque<Character> deque = new ArrayDeque<>();
+
+        for (char current : word.toCharArray()) {
+            if (!deque.isEmpty() && deque.peek() == current) {
+                deque.pop();
+            } else {
+                deque.push(current);
             }
         }
 
-        return stack.isEmpty();
+        return deque.isEmpty();
     }
 }
-
-/*
-3 2 1 -3 -1
-2 1 -3 3 -1
-1 -3 2 3 -1
--3 1 2 3 -1
-1 2 -3 3 -1
-1 2 3 -1 -3
-
-
- */
