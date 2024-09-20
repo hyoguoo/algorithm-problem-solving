@@ -1,12 +1,12 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 16173
+ * Problem Number: 16173 / 16174
  * Cheat Level: 0
- * Algorithm: Brute Force
+ * Algorithm: Graph / BFS
  */
 
-package bruteforce;
+package graph.bfs;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class JumpKingJellySmall {
+public class JumpKingJellyLarge {
 
     private static final int START_N = 0;
     private static final int START_M = 0;
