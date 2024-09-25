@@ -13,49 +13,93 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class PrinterQueue {
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int length = Integer.parseInt(bufferedReader.readLine());
+        int testCount = Integer.parseInt(bufferedReader.readLine());
 
-        for (int i = 0; i < length; i++) {
-            int[] numbers = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            int targetIndex = numbers[1];
-            int[] priorityArray = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            System.out.println(solution(getQueue(priorityArray), targetIndex));
+        StringBuilder stringBuilder = new StringBuilder();
+
+        while (testCount-- > 0) {
+            int[] info = Arrays.stream(bufferedReader.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            int targetIndex = info[1];
+
+            int[] documents = Arrays.stream(bufferedReader.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+
+            stringBuilder.append(solution(documents, targetIndex)).append("\n");
         }
+
+        System.out.print(stringBuilder.toString().trim());
     }
 
-    private static int solution(Queue<int[]> queue, int targetIndex) {
-        int count = 1;
+    private static int solution(int[] documents, int targetIndex) {
+        QueueImpl queue = new QueueImpl(documents);
+        int count = 0;
+
         while (true) {
-            int maxPriority = getMaxPriority(queue);
-            int[] poll = queue.poll();
-            if (poll[1] == maxPriority) {
-                if (poll[0] == targetIndex) return count;
-                count++;
-            } else {
-                queue.add(poll);
+            Document document = queue.poll();
+            count++;
+
+            if (document.isEqualsIndex(targetIndex)) {
+                return count;
             }
         }
     }
 
-    private static Queue<int[]> getQueue(int[] priorityArray) {
-        Queue<int[]> queue = new LinkedList<>();
-        for (int i = 0; i < priorityArray.length; i++) {
-            queue.add(new int[]{i, priorityArray[i]});
+    static class QueueImpl {
+
+        private final Queue<Document> queue;
+        private final PriorityQueue<Integer> priorityQueue;
+
+        public QueueImpl(int[] documents) {
+            this.queue = new LinkedList<>();
+            priorityQueue = new PriorityQueue<>((o1, o2) -> o2 - o1);
+            for (int i = 0; i < documents.length; i++) {
+                queue.offer(new Document(i, documents[i]));
+                priorityQueue.offer(documents[i]);
+            }
         }
-        return queue;
+
+        public Document poll() {
+            moveToHighestPriority();
+
+            return queue.poll();
+        }
+
+        private void moveToHighestPriority() {
+            while (!queue.isEmpty() && !priorityQueue.isEmpty() &&
+                    !queue.peek().isEqualsPriority(priorityQueue.peek())) {
+                queue.offer(queue.poll());
+            }
+
+            priorityQueue.poll();
+        }
     }
 
-    private static int getMaxPriority(Queue<int[]> queue) {
-        int maxPriority = 0;
-        for (int[] ints : queue) {
-            if (ints[1] > maxPriority) maxPriority = ints[1];
+    static class Document {
+
+        private final int index;
+        private final int priority;
+
+        public Document(int index, int priority) {
+            this.index = index;
+            this.priority = priority;
         }
-        return maxPriority;
+
+        public boolean isEqualsPriority(int priority) {
+            return this.priority == priority;
+        }
+
+        public boolean isEqualsIndex(int index) {
+            return this.index == index;
+        }
     }
 }
