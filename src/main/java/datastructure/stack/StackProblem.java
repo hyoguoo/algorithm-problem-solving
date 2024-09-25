@@ -11,71 +11,148 @@ package datastructure.stack;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.List;
+import java.util.Optional;
 
 public class StackProblem {
-    static final String PUSH = "push";
-    static final String POP = "pop";
-    static final String SIZE = "size";
-    static final String EMPTY = "empty";
-    static final String TOP = "top";
-
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int length = Integer.parseInt(bufferedReader.readLine());
+        int queryCount = Integer.parseInt(bufferedReader.readLine());
+        List<Query> queryList = new ArrayList<>();
 
-        StackImpl stackImpl = new StackImpl();
-        for (int i = 0; i < length; i++) {
-            String[] actions = bufferedReader.readLine().split(" ");
-            String action = actions[0];
-            switch (action) {
-                case PUSH:
-                    int value = Integer.parseInt(actions[1]);
-                    stackImpl.push(value);
-                    break;
-                case POP:
-                    System.out.println(stackImpl.pop());
-                    break;
-                case SIZE:
-                    System.out.println(stackImpl.size());
-                    break;
-                case EMPTY:
-                    System.out.println(stackImpl.empty());
-                    break;
-                case TOP:
-                    System.out.println(stackImpl.top());
-                    break;
+        for (int i = 0; i < queryCount; i++) {
+            String[] query = bufferedReader.readLine().split(" ");
+            if (query.length == 1) {
+                queryList.add(new Query(Command.of(query[0])));
+            } else {
+                queryList.add(new Query(Command.of(query[0]), Integer.parseInt(query[1])));
             }
         }
-    }
-}
 
-class StackImpl {
-
-    Stack<Integer> stack;
-
-    public StackImpl() {
-        this.stack = new Stack<>();
+        System.out.print(solution(queryList));
     }
 
-    public void push(int value) {
-        this.stack.push(value);
+    private static String solution(List<Query> queryList) {
+        StackImpl stack = new StackImpl();
+
+        queryList.forEach(stack::executeQuery);
+
+        return stack.printQueryResult();
     }
 
-    public int pop() {
-        return this.size() == 0 ? -1 : this.stack.pop();
+    enum Command {
+        PUSH("push"),
+        POP("pop"),
+        SIZE("size"),
+        EMPTY("empty"),
+        TOP("top");
+
+        private final String value;
+
+        Command(String value) {
+            this.value = value;
+        }
+
+        public static Command of(String value) {
+            return Arrays.stream(values())
+                    .filter(command -> command.value.equals(value))
+                    .findFirst()
+                    .orElseThrow(IllegalArgumentException::new);
+        }
     }
 
-    public int top() {
-        return this.size() == 0 ? -1 : this.stack.peek();
+    static class StackImpl {
+
+        private final Deque<Integer> deque;
+        private final List<Integer> queryResultList;
+
+        public StackImpl() {
+            this.deque = new ArrayDeque<>();
+            this.queryResultList = new ArrayList<>();
+        }
+
+        public void push(Integer value) {
+            deque.push(value);
+        }
+
+        public int pop() {
+            return deque.isEmpty()
+                    ? -1
+                    : deque.pop();
+        }
+
+        public int size() {
+            return deque.size();
+        }
+
+        public int empty() {
+            return deque.isEmpty()
+                    ? 1
+                    : 0;
+        }
+
+        public int top() {
+            return deque.isEmpty()
+                    ? -1
+                    : deque.peek();
+        }
+
+        public void executeQuery(Query query) {
+            switch (query.getCommand()) {
+                case PUSH:
+                    push(query.getValue());
+                    break;
+                case POP:
+                    queryResultList.add(pop());
+                    break;
+                case SIZE:
+                    queryResultList.add(size());
+                    break;
+                case EMPTY:
+                    queryResultList.add(empty());
+                    break;
+                case TOP:
+                    queryResultList.add(top());
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+
+        public String printQueryResult() {
+            StringBuilder result = new StringBuilder();
+            queryResultList.forEach(value -> result.append(value).append("\n"));
+            return result.toString().trim();
+        }
     }
 
-    public int size() {
-        return this.stack.size();
-    }
+    static class Query {
 
-    public int empty() {
-        return this.stack.isEmpty() ? 1 : 0;
+        private final Command command;
+        private final Integer value;
+
+        public Query(Command command) {
+            this.command = command;
+            this.value = null;
+        }
+
+        public Query(Command command, Integer value) {
+            this.command = command;
+            this.value = value;
+        }
+
+        public Command getCommand() {
+            return command;
+        }
+
+        public Integer getValue() {
+            return Optional.ofNullable(value)
+                    .orElseThrow(IllegalArgumentException::new);
+        }
     }
 }
