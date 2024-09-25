@@ -11,54 +11,78 @@ package datastructure.deque;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 public class JosephusProblem {
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int[] numbers = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        int length = numbers[0];
-        int skip = numbers[1];
+        int[] info = Arrays.stream(bufferedReader.readLine().split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        int peopleCount = info[0];
+        int removeIndex = info[1];
+        
+        System.out.print(solution(peopleCount, removeIndex));
+    }
 
-        JosephusDeque josephusDeque = new JosephusDeque(length);
-        List<Integer> result = new ArrayList<>();
+    private static String solution(int peopleCount, int removeIndex) {
+        JosephusDeque josephusDeque = new JosephusDeque(peopleCount);
 
-        while (josephusDeque.isNotEmpty()) {
-            josephusDeque.skipNTimes(skip - 1);
-            result.add(josephusDeque.removeFront());
+        while (!josephusDeque.isRemovedAll()) {
+            josephusDeque.removePeople(removeIndex);
         }
 
-        printResult(result);
+        return josephusDeque.formatRemovedPeople();
     }
 
-    private static void printResult(List<Integer> result) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("<");
-        for (Integer integer : result) stringBuilder.append(integer).append(", ");
-        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-        stringBuilder.append(">");
-        System.out.println(stringBuilder);
-    }
-}
+    static class JosephusDeque {
 
-class JosephusDeque {
-    private final Deque<Integer> deque;
+        private final Queue<Integer> queue;
+        private final List<Integer> removedPeopleHistory;
 
-    public JosephusDeque(int length) {
-        this.deque = new ArrayDeque<>();
-        for (int i = 1; i <= length; i++) this.deque.add(i);
-    }
+        public JosephusDeque(int peopleCount) {
+            queue = new LinkedList<>();
+            removedPeopleHistory = new ArrayList<>();
+            for (int i = 1; i <= peopleCount; i++) {
+                queue.add(i);
+            }
+        }
 
-    public int removeFront() {
-        return this.deque.removeFirst();
-    }
+        public void removePeople(int removeIndex) {
+            int index = calculateRemoveIndex(removeIndex - 1);
+            removePerson(index);
+        }
 
-    public void skipNTimes(int skip) {
-        for (int i = 0; i < skip; i++) this.deque.add(this.deque.removeFirst());
-    }
+        public boolean isRemovedAll() {
+            return queue.isEmpty();
+        }
 
-    public boolean isNotEmpty() {
-        return !this.deque.isEmpty();
+        private void removePerson(int index) {
+            for (int i = 0; i < index; i++) {
+                queue.add(queue.poll());
+            }
+            removedPeopleHistory.add(queue.poll());
+        }
+
+        private int calculateRemoveIndex(int removeIndex) {
+            return removeIndex % queue.size();
+        }
+
+        public String formatRemovedPeople() {
+            StringBuilder result = new StringBuilder("<");
+            for (int i = 0; i < removedPeopleHistory.size(); i++) {
+                result.append(removedPeopleHistory.get(i));
+                if (i < removedPeopleHistory.size() - 1) {
+                    result.append(", ");
+                }
+            }
+            result.append(">");
+            return result.toString();
+        }
     }
 }
