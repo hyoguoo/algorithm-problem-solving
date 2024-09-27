@@ -19,11 +19,10 @@ public class JumpingNumberBoard {
 
     static final int SIZE = 5;
     static final int MOVE_LIMIT = 6;
-    static final int[][] DIRECTIONS = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-    static final Set<String> numberSet = new HashSet<>();
 
     public static void main(String[] args) throws IOException {
-        System.out.print(solution(parseBoard()));
+        int[][] board = parseBoard();
+        System.out.print(solution(board));
     }
 
     private static int[][] parseBoard() throws IOException {
@@ -41,45 +40,81 @@ public class JumpingNumberBoard {
     }
 
     private static int solution(int[][] board) {
+        Set<String> numberSet = new HashSet<>(); // numberSet을 지역 변수로 사용
         for (int n = 0; n < SIZE; n++) {
             for (int m = 0; m < SIZE; m++) {
-                dfs(board, new Coordinate(n, m), new StringBuilder().append(board[n][m]));
+                dfs(
+                        board,
+                        new Coordinate(n, m),
+                        new StringBuilder().append(board[n][m]),
+                        numberSet
+                );
             }
         }
         return numberSet.size();
     }
 
-    private static void dfs(int[][] board, Coordinate coordinate, StringBuilder numberString) {
+    private static void dfs(
+            int[][] board,
+            Coordinate coordinate,
+            StringBuilder numberString,
+            Set<String> numberSet
+    ) {
         if (numberString.length() == MOVE_LIMIT) {
             numberSet.add(numberString.toString());
             return;
         }
 
-        for (int[] direction : DIRECTIONS) {
-            int nextN = coordinate.n + direction[0];
-            int nextM = coordinate.m + direction[1];
+        for (Direction direction : Direction.values()) {
+            Coordinate nextCoordinate = coordinate.move(direction);
 
-            if (!isInBound(nextN, nextM)) {
+            if (!isInBound(nextCoordinate)) {
                 continue;
             }
 
-            dfs(board, new Coordinate(nextN, nextM), numberString.append(board[nextN][nextM]));
+            dfs(
+                    board,
+                    nextCoordinate,
+                    numberString.append(board[nextCoordinate.n][nextCoordinate.m]),
+                    numberSet
+            );
+
             numberString.deleteCharAt(numberString.length() - 1);
         }
     }
 
-    private static boolean isInBound(int n, int m) {
-        return 0 <= n && n < SIZE && 0 <= m && m < SIZE;
+    private static boolean isInBound(Coordinate coordinate) {
+        return 0 <= coordinate.n && coordinate.n < SIZE &&
+                0 <= coordinate.m && coordinate.m < SIZE;
+    }
+
+    enum Direction {
+        RIGHT(0, 1),
+        LEFT(0, -1),
+        DOWN(1, 0),
+        UP(-1, 0);
+
+        private final int n;
+        private final int m;
+
+        Direction(int n, int m) {
+            this.n = n;
+            this.m = m;
+        }
     }
 
     static class Coordinate {
 
-        int n;
-        int m;
+        private final int n;
+        private final int m;
 
         public Coordinate(int n, int m) {
             this.n = n;
             this.m = m;
+        }
+
+        public Coordinate move(Direction direction) {
+            return new Coordinate(this.n + direction.n, this.m + direction.m);
         }
     }
 }
