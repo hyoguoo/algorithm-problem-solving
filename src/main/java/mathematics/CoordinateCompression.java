@@ -26,30 +26,23 @@ public class CoordinateCompression {
     }
 
     private static String solution(int[] numbers) {
-        int[] sortedNumbers = getSortedNumbers(numbers);
-        int[] compressedNumbers = getCompressedNumbers(sortedNumbers);
+        int[] sortedDistinctNumbers = getSortedDistinctNumbers(numbers);
 
         return Arrays
-                .toString(mappedNumber(numbers, compressedNumbers))
+                .toString(mappedNumber(numbers, sortedDistinctNumbers))
                 .replaceAll("[\\[\\],]", "");
     }
 
-    private static int[] getSortedNumbers(int[] numbers) {
+    private static int[] getSortedDistinctNumbers(int[] numbers) {
         return Arrays.stream(numbers)
                 .sorted()
-                .toArray();
-    }
-
-    private static int[] getCompressedNumbers(int[] sortedNumbers) {
-        return Arrays.stream(sortedNumbers)
                 .distinct()
-                .sorted()
                 .toArray();
     }
 
-    private static int[] mappedNumber(int[] numbers, int[] compressedNumbers) {
+    private static int[] mappedNumber(int[] numbers, int[] sortedDistinctNumbers) {
         return Arrays.stream(numbers)
-                .map(number -> Arrays.binarySearch(compressedNumbers, number))
+                .map(number -> Arrays.binarySearch(sortedDistinctNumbers, number))
                 .toArray();
     }
 }
