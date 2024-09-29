@@ -11,54 +11,58 @@ package graph.dfs;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.stream.IntStream;
 
 public class Virus {
 
-    static final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-    static final int START_VERTEX = 1;
+    public static final int START_COMPUTER_INDEX = 1;
 
     public static void main(String[] args) throws IOException {
-        int vertexCount = Integer.parseInt(bufferedReader.readLine());
-        int edgeCount = Integer.parseInt(bufferedReader.readLine());
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        int computerCount = Integer.parseInt(bufferedReader.readLine());
+        int networkCount = Integer.parseInt(bufferedReader.readLine());
 
-        Map<Integer, List<Integer>> adjacentVertices = initializeAdjacentVertices(edgeCount);
+        Map<Integer, List<Integer>> computerNetworkMap = new HashMap<>();
 
-        System.out.println(solution(adjacentVertices, vertexCount));
-    }
+        for (int i = 0; i < networkCount; i++) {
+            int[] networkInfo = Arrays.stream(bufferedReader.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            int computerA = networkInfo[0];
+            int computerB = networkInfo[1];
 
-    private static Map<Integer, List<Integer>> initializeAdjacentVertices(int edgeCount) throws IOException {
-        Map<Integer, List<Integer>> adjacentVertices = new HashMap<>();
-
-        for (int e = 0; e < edgeCount; e++) {
-            int[] edgeInfo = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            adjacentVertices.computeIfAbsent(edgeInfo[0], v -> new ArrayList<>()).add(edgeInfo[1]);
-            adjacentVertices.computeIfAbsent(edgeInfo[1], v -> new ArrayList<>()).add(edgeInfo[0]);
+            computerNetworkMap.computeIfAbsent(computerA, k -> new ArrayList<>()).add(computerB);
+            computerNetworkMap.computeIfAbsent(computerB, k -> new ArrayList<>()).add(computerA);
         }
 
-        return adjacentVertices;
+        System.out.print(solution(computerNetworkMap, computerCount));
     }
 
-    private static int solution(Map<Integer, List<Integer>> adjacentVertices, int vertexCount) {
-        boolean[] visited = new boolean[vertexCount + 1];
-        visited[START_VERTEX] = true;
-
+    private static int solution(Map<Integer, List<Integer>> computerNetworkMap, int computerCount) {
         Queue<Integer> queue = new LinkedList<>();
-        queue.add(START_VERTEX);
-
-        int visitCount = 0;
+        boolean[] visited = new boolean[computerCount + 1];
+        queue.add(START_COMPUTER_INDEX);
+        visited[START_COMPUTER_INDEX] = true;
 
         while (!queue.isEmpty()) {
-            Integer current = queue.poll();
-            visitCount++;
-
-            for (Integer next : adjacentVertices.getOrDefault(current, Collections.emptyList())) {
-                if (visited[next]) continue;
-                queue.add(next);
-                visited[next] = true;
+            int currentComputer = queue.poll();
+            for (int connectedComputer : computerNetworkMap.getOrDefault(currentComputer, new ArrayList<>())) {
+                if (!visited[connectedComputer]) {
+                    queue.add(connectedComputer);
+                    visited[connectedComputer] = true;
+                }
             }
         }
 
-        return visitCount - 1;
+        return IntStream.range(1, visited.length)
+                .map(i -> visited[i] ? 1 : 0)
+                .sum() - 1;
     }
 }
