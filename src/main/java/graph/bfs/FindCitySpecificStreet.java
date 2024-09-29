@@ -11,76 +11,92 @@ package graph.bfs;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
 public class FindCitySpecificStreet {
 
-    static final int LINKED = 1;
+    private static final int NOT_VISITED = -1;
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int[] info = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+        int[] info = Arrays.stream(bufferedReader.readLine().split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
         int cityCount = info[0];
         int streetCount = info[1];
-        int distance = info[2];
-        int startCity = info[3];
+        int targetDistance = info[2];
+        int startCityIndex = info[3];
 
-        List<Integer>[] linkedCities = new List[cityCount + 1];
-        for (int i = 0; i < linkedCities.length; i++) linkedCities[i] = new ArrayList<>();
+        Map<Integer, List<Integer>> cityStreetMap = new HashMap<>();
+
         for (int i = 0; i < streetCount; i++) {
-            int[] streetInfo = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            linkedCities[streetInfo[0]].add(streetInfo[1]);
+            int[] streetInfo = Arrays.stream(bufferedReader.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            int cityAIndex = streetInfo[0];
+            int cityBIndex = streetInfo[1];
+
+            cityStreetMap.computeIfAbsent(cityAIndex, k -> new ArrayList<>()).add(cityBIndex);
         }
 
-        List<Integer> solution = solution(linkedCities, distance, startCity);
-        if (solution.isEmpty()) System.out.println(-1);
-        else solution.forEach(System.out::println);
+        System.out.print(
+                solution(
+                        cityStreetMap, cityCount,
+                        startCityIndex, targetDistance
+                )
+        );
     }
 
-    private static List<Integer> solution(List<Integer>[] linkedCities, int distance, int startCity) {
-        int[] distances = new int[linkedCities.length];
-        Arrays.fill(distances, Integer.MAX_VALUE);
+    private static String solution(
+            Map<Integer, List<Integer>> cityStreetMap,
+            int cityCount,
+            int startCityIndex,
+            int targetDistance
+    ) {
+        int[] distanceFromStartCity = initDistance(cityCount);
 
-        Queue<City> queue = new LinkedList<>();
-        queue.add(new City(startCity, 0));
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(startCityIndex);
+        distanceFromStartCity[startCityIndex] = 0;
 
         while (!queue.isEmpty()) {
-            City city = queue.poll();
-            int cityNumber = city.cityNumber;
-            int cityDistance = city.distance;
-
-            if (distances[cityNumber] < cityDistance) continue;
-            distances[cityNumber] = cityDistance;
-
-            for (int linkedCity : linkedCities[cityNumber]) {
-                int linkedCityDistance = cityDistance + LINKED;
-                if (distances[linkedCity] <= linkedCityDistance) continue;
-                queue.add(new City(linkedCity, linkedCityDistance));
+            int currentCityIndex = queue.poll();
+            for (int nextCityIndex : cityStreetMap.getOrDefault(currentCityIndex, new ArrayList<>())) {
+                if (distanceFromStartCity[nextCityIndex] == NOT_VISITED) {
+                    distanceFromStartCity[nextCityIndex] = distanceFromStartCity[currentCityIndex] + 1;
+                    queue.add(nextCityIndex);
+                }
             }
         }
 
-        return searchCitiesByDistance(distances, distance);
+        return formatTargetDistanceCities(cityCount, targetDistance, distanceFromStartCity);
     }
 
-    private static List<Integer> searchCitiesByDistance(int[] distances, int distance) {
-        List<Integer> cityList = new ArrayList<>();
+    private static int[] initDistance(int cityCount) {
+        int[] distanceFromStartCity = new int[cityCount + 1];
+        Arrays.fill(distanceFromStartCity, NOT_VISITED);
+        return distanceFromStartCity;
+    }
 
-        for (int i = 1; i < distances.length; i++) {
-            if (distances[i] == distance) {
-                cityList.add(i);
+    private static String formatTargetDistanceCities(int cityCount, int targetDistance, int[] distanceFromStartCity) {
+        StringBuilder stringBuilder = new StringBuilder();
+        boolean isExist = false;
+
+        for (int i = 1; i <= cityCount; i++) {
+            if (distanceFromStartCity[i] == targetDistance) {
+                stringBuilder.append(i).append("\n");
+                isExist = true;
             }
         }
 
-        return cityList;
-    }
-
-    static class City {
-        private final int cityNumber;
-        private final int distance;
-
-        public City(int cityNumber, int distance) {
-            this.cityNumber = cityNumber;
-            this.distance = distance;
-        }
+        return isExist
+                ? stringBuilder.toString().trim()
+                : "-1";
     }
 }
