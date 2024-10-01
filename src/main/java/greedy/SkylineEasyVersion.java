@@ -11,41 +11,58 @@ package greedy;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Stack;
+import java.util.Deque;
 
 public class SkylineEasyVersion {
 
-    static int count = 0;
-    static final Stack<Integer> heightStack = new Stack<>() {
-        @Override
-        public synchronized Integer peek() {
-            if (heightStack.isEmpty()) return 0;
-            return heightStack.elementAt(heightStack.size() - 1);
-        }
-    };
-
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int length = Integer.parseInt(bufferedReader.readLine());
+        int heightChangeCount = Integer.parseInt(bufferedReader.readLine());
 
-        for (int i = 0; i < length; i++) {
-            int[] skyline = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            getCount(skyline[1]);
+        HeightChange[] heightChanges = new HeightChange[heightChangeCount];
+
+        for (int i = 0; i < heightChangeCount; i++) {
+            int[] info = Arrays.stream(bufferedReader.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            heightChanges[i] = new HeightChange(info[0], info[1]);
         }
-        System.out.println(count);
+
+        System.out.print(solution(heightChanges));
     }
 
-    private static void getCount(int height) {
-        if (heightStack.peek() < height) {
-            count++;
-            heightStack.push(height);
-        } else if (heightStack.peek() > height) {
-            while (heightStack.peek() > height) heightStack.pop();
-            if (heightStack.peek() != height) {
+    private static long solution(HeightChange[] heightChanges) {
+        int count = 0;
+        Deque<Integer> heightStack = new ArrayDeque<>();
+
+        for (HeightChange heightChange : heightChanges) {
+            while (!heightStack.isEmpty() && heightStack.peek() > heightChange.height) {
+                heightStack.pop();
                 count++;
-                heightStack.push(height);
             }
+
+            if (heightStack.isEmpty() || heightStack.peek() < heightChange.height) {
+                heightStack.push(heightChange.height);
+            }
+        }
+
+        return count +
+                heightStack.stream()
+                        .mapToInt(Integer::intValue)
+                        .filter(height -> height != 0)
+                        .count();
+    }
+
+    static class HeightChange {
+
+        private final int index;
+        private final int height;
+
+        public HeightChange(int index, int height) {
+            this.index = index;
+            this.height = height;
         }
     }
 }
