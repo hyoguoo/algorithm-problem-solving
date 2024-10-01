@@ -11,79 +11,96 @@ package graph.bfs;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Queue;
+import java.util.Map;
+import java.util.PriorityQueue;
 
 public class WeightLimit {
 
-    static final int LIMIT = 1_000_000_000;
-
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int[] info = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        int nodeCount = info[0];
-        int edgeCount = info[1];
-        List<Edge>[] edges = new List[nodeCount + 1];
-        for (int i = 0; i <= nodeCount; i++) edges[i] = new LinkedList<>();
+        int[] info = Arrays.stream(bufferedReader.readLine().split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
 
+        int islandCount = info[0];
+        int bridgeCount = info[1];
 
-        for (int i = 0; i < edgeCount; i++) {
-            int[] edgeInfo = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            int from = edgeInfo[0];
-            int to = edgeInfo[1];
-            int weight = edgeInfo[2];
-            edges[from].add(new Edge(to, weight));
-            edges[to].add(new Edge(from, weight));
+        Map<Integer, List<Bridge>> map = new HashMap<>();
+
+        for (int i = 0; i < bridgeCount; i++) {
+            int[] bridgeInfo = Arrays.stream(bufferedReader.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            int start = bridgeInfo[0];
+            int end = bridgeInfo[1];
+            int weightLimit = bridgeInfo[2];
+
+            map.computeIfAbsent(start, key -> new ArrayList<>()).add(new Bridge(end, weightLimit));
+            map.computeIfAbsent(end, key -> new ArrayList<>()).add(new Bridge(start, weightLimit));
         }
 
-        int[] startEnd = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        int start = startEnd[0];
-        int end = startEnd[1];
+        int[] targetInfo = Arrays.stream(bufferedReader.readLine().split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
 
-        System.out.println(solution(edges, start, end));
+        int start = targetInfo[0];
+        int end = targetInfo[1];
+
+        System.out.print(solution(map, islandCount, start, end));
     }
 
-    private static int solution(List<Edge>[] edges, int start, int end) {
-        int min = 0;
-        int max = LIMIT;
+    private static int solution(Map<Integer, List<Bridge>> map, int islandCount, int start, int end) {
+        PriorityQueue<Position> priorityQueue = new PriorityQueue<>(
+                Comparator.comparingInt(p -> -p.weight)
+        );
+        int[] visitedMaxWeight = new int[islandCount + 1];
+        priorityQueue.add(new Position(start, Integer.MAX_VALUE));
+        visitedMaxWeight[start] = Integer.MAX_VALUE;
 
-        while (min <= max) {
-            int mid = (min + max) / 2;
-            if (bfs(edges, start, end, mid)) min = mid + 1;
-            else max = mid - 1;
-        }
+        while (!priorityQueue.isEmpty()) {
+            Position current = priorityQueue.poll();
 
-        return max;
-    }
+            if (current.island == end) {
+                return current.weight;
+            }
 
-    private static boolean bfs(List<Edge>[] edges, int start, int end, int weight) {
-        Queue<Integer> queue = new LinkedList<>();
-        boolean[] visited = new boolean[edges.length];
-        queue.add(start);
-
-        while (!queue.isEmpty()) {
-            int current = queue.poll();
-            if (current == end) return true;
-
-            for (Edge edge : edges[current]) {
-                if (edge.weight < weight ||
-                    visited[edge.to]) continue;
-                visited[edge.to] = true;
-                queue.add(edge.to);
+            for (Bridge bridge : map.getOrDefault(current.island, new ArrayList<>())) {
+                int nextWeight = Math.min(current.weight, bridge.weightLimit);
+                if (nextWeight > visitedMaxWeight[bridge.end]) {
+                    priorityQueue.add(new Position(bridge.end, nextWeight));
+                    visitedMaxWeight[bridge.end] = nextWeight;
+                }
             }
         }
 
-        return false;
+        throw new IllegalArgumentException();
     }
 
-    static class Edge {
-        int to;
-        int weight;
-        public Edge(int to, int weight) {
-            this.to = to;
+
+    static class Position {
+
+        private final int island;
+        private final int weight;
+
+        public Position(int island, int weight) {
+            this.island = island;
             this.weight = weight;
+        }
+    }
+
+    static class Bridge {
+
+        private final int end;
+        private final int weightLimit;
+
+        public Bridge(int end, int weightLimit) {
+            this.end = end;
+            this.weightLimit = weightLimit;
         }
     }
 }
