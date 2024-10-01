@@ -15,22 +15,32 @@ import java.util.Arrays;
 
 public class Number30 {
 
+    private static final String IMPOSSIBLE = "-1";
+
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println(solution(bufferedReader.readLine()));
+        System.out.print(solution(bufferedReader.readLine()));
     }
 
     private static String solution(String input) {
-        if (!input.contains("0")) return "-1";
-        if (addAllDigits(input) % 3 != 0) return "-1";
+        if (!input.contains("0") || addAllDigits(input) % 3 != 0) {
+            return IMPOSSIBLE;
+        }
 
         char[] chars = input.toCharArray();
         Arrays.sort(chars);
-        StringBuilder stringBuilder = new StringBuilder(new String(chars));
-        return stringBuilder.reverse().toString();
+
+        return reverseString(chars);
+    }
+
+    private static String reverseString(char[] chars) {
+        return new StringBuilder(new String(chars)).reverse().toString();
     }
 
     private static int addAllDigits(String input) {
-        return input.chars().map(Character::getNumericValue).sum();
+        return input
+                .chars()
+                .map(Character::getNumericValue)
+                .sum();
     }
 }
