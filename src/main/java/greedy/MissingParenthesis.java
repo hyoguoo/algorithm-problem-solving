@@ -18,27 +18,24 @@ public class MissingParenthesis {
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         String input = bufferedReader.readLine();
-        String[] splitByMinus = input.split("-");
 
-        System.out.println((getMinNumber(splitByMinus)));
+        System.out.print(solution(input));
     }
 
-    private static int getMinNumber(String[] splitByMinus) {
-        int result = 0;
+    private static int solution(String input) {
+        String[] subtraction = input.split("-");
+        int result = sum(subtraction[0]);
 
-        for (int i = 0; i < splitByMinus.length; i++) {
-            int[] numbers = Arrays.stream(splitByMinus[i].split("\\+")).mapToInt(Integer::parseInt).toArray();
-            int sum = getSum(numbers);
-            if (i == 0) result += sum;
-            else result -= sum;
+        for (int i = 1; i < subtraction.length; i++) {
+            result -= sum(subtraction[i]);
         }
 
         return result;
     }
 
-    private static int getSum(int[] numbers) {
-        int sum = 0;
-        for (int number : numbers) sum += number;
-        return sum;
+    private static int sum(String input) {
+        return Arrays.stream(input.split("\\+"))
+                .mapToInt(Integer::parseInt)
+                .sum();
     }
 }
