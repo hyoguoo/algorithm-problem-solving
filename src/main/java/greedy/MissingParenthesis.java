@@ -23,14 +23,10 @@ public class MissingParenthesis {
     }
 
     private static int solution(String input) {
-        String[] subtraction = input.split("-");
-        int result = sum(subtraction[0]);
-
-        for (int i = 1; i < subtraction.length; i++) {
-            result -= sum(subtraction[i]);
-        }
-
-        return result;
+        return Arrays.stream(input.split("-"))
+                .mapToInt(MissingParenthesis::sum)
+                .reduce((a, b) -> a - b)
+                .orElseThrow();
     }
 
     private static int sum(String input) {
