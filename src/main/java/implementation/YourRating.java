@@ -16,7 +16,6 @@ import java.util.Arrays;
 public class YourRating {
 
     static final int SUBJECT_COUNT = 20;
-    static final String PASS = "P";
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
@@ -24,7 +23,7 @@ public class YourRating {
         Subject[] subjects = new Subject[SUBJECT_COUNT];
         for (int s = 0; s < SUBJECT_COUNT; s++) {
             String[] input = bufferedReader.readLine().split(" ");
-            subjects[s] = new Subject(Double.parseDouble(input[1]), input[2]);
+            subjects[s] = new Subject(Double.parseDouble(input[1]), Grade.of(input[2]));
         }
 
         System.out.printf("%.6f", solution(subjects));
@@ -32,8 +31,8 @@ public class YourRating {
 
     private static double solution(Subject[] subjects) {
         return Arrays.stream(subjects)
-                .filter(s -> !PASS.equals(s.grade))
-                .map(s -> new Rate(s.credit, Grade.findScore(s.grade) * s.credit))
+                .filter(s -> !s.isGradePass())
+                .map(s -> new Rate(s.credit, s.getWeightedScore()))
                 .reduce(new Rate(0, 0), Rate::add)
                 .getRate();
     }
@@ -47,7 +46,8 @@ public class YourRating {
         C_ZERO("C0", 2.0),
         D_PLUS("D+", 1.5),
         D_ZERO("D0", 1.0),
-        F("F", 0.0);
+        F("F", 0.0),
+        P("P", 0.0);
 
         private final String gradeString;
         private final double score;
@@ -57,19 +57,18 @@ public class YourRating {
             this.score = score;
         }
 
-        public static double findScore(String grade) {
+        public static Grade of(String grade) {
             return Arrays.stream(Grade.values())
                     .filter(g -> g.gradeString.equals(grade))
                     .findFirst()
-                    .orElseThrow()
-                    .score;
+                    .orElseThrow();
         }
     }
 
     static class Rate {
 
-        private double totalCredit;
-        private double totalScore;
+        private final double totalCredit;
+        private final double totalScore;
 
         public Rate(double totalCredit, double totalScore) {
             this.totalCredit = totalCredit;
@@ -77,10 +76,10 @@ public class YourRating {
         }
 
         public Rate add(Rate rate) {
-            this.totalCredit += rate.totalCredit;
-            this.totalScore += rate.totalScore;
-
-            return this;
+            return new Rate(
+                    totalCredit + rate.totalCredit,
+                    totalScore + rate.totalScore
+            );
         }
 
         public double getRate() {
@@ -91,11 +90,22 @@ public class YourRating {
     static class Subject {
 
         private final double credit;
-        private final String grade;
+        private final Grade grade;
 
-        public Subject(double credit, String grade) {
+        public Subject(double credit, Grade grade) {
             this.credit = credit;
             this.grade = grade;
+        }
+
+        public double getWeightedScore() {
+            if (isGradePass()) {
+                throw new IllegalArgumentException();
+            }
+            return credit * grade.score;
+        }
+
+        private boolean isGradePass() {
+            return grade == Grade.P;
         }
     }
 }
