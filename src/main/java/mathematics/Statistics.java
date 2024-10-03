@@ -11,30 +11,37 @@ package mathematics;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Statistics {
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         int length = Integer.parseInt(bufferedReader.readLine());
-        float[] numbers = new float[length];
+        double[] numbers = new double[length];
         Map<Double, Integer> map = new HashMap<>();
         for (int i = 0; i < length; i++) {
             double number = Double.parseDouble(bufferedReader.readLine());
             map.put(number, map.getOrDefault(number, 0) + 1);
-            numbers[i] = (float) number;
+            numbers[i] = number;
         }
-        Arrays.sort(numbers);
-        printResult(length, numbers, map);
+
+        System.out.print(solution(numbers, map));
     }
 
-    private static void printResult(int length, float[] numbers, Map<Double, Integer> map) {
-        double sum = getSum(numbers);
-        System.out.println(Math.round(sum / length));
-        System.out.println((int) numbers[length / 2]);
-        System.out.println(getMode(map));
-        System.out.println((int) (numbers[length - 1] - numbers[0]));
+    private static String solution(double[] numbers, Map<Double, Integer> map) {
+        Arrays.sort(numbers);
+        double average = Math.round(getSum(numbers) / numbers.length);
+        double median = numbers[numbers.length / 2];
+        double mode = getMode(map);
+        double range = numbers[numbers.length - 1] - numbers[0];
+
+        return String.format("%.0f%n%.0f%n%.0f%n%.0f%n", average, median, mode, range);
+
     }
 
     private static int getMode(Map<Double, Integer> map) {
@@ -44,13 +51,12 @@ public class Statistics {
         entryList.removeIf(entry -> !entry.getValue().equals(maxValue));
         entryList.sort((o1, o2) -> (int) (o1.getKey() - o2.getKey()));
 
-        return (int) Math.round(entryList.size() > 1 ? entryList.get(1).getKey() : entryList.get(0).getKey());
+        return (int) Math.round(entryList.size() > 1
+                ? entryList.get(1).getKey()
+                : entryList.get(0).getKey());
     }
 
-    private static double getSum(float[] numbers) {
-        double sum = 0;
-        for (float number : numbers) sum += number;
-
-        return sum;
+    private static double getSum(double[] numbers) {
+        return Arrays.stream(numbers).sum();
     }
 }
