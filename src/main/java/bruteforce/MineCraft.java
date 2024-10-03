@@ -11,64 +11,122 @@ package bruteforce;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.stream.IntStream;
 
 public class MineCraft {
 
-    static int currentBlocks;
-    static int minTime = Integer.MAX_VALUE;
-    static int minTimeHeight = Integer.MIN_VALUE;
-
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int[] infos = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        currentBlocks = infos[2];
-        List<Integer> heightList = new ArrayList<>();
-        for (int i = 0; i < infos[0]; i++) {
-            int[] heights = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            for (int height : heights) {
-                heightList.add(height);
+        int[] info = Arrays.stream(bufferedReader.readLine().split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        int sizeN = info[0];
+        int sizeM = info[1];
+        int blockCount = info[2];
+
+        int[][] mapHeight = new int[sizeN][sizeM];
+        for (int i = 0; i < sizeN; i++) {
+            mapHeight[i] = Arrays.stream(bufferedReader.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+        }
+
+        System.out.print(solution(mapHeight, blockCount));
+    }
+
+    private static String solution(int[][] mapHeight, int blockCount) {
+        HeightManager heightManager = new HeightManager(mapHeight, blockCount);
+        heightManager.execute();
+        return heightManager.getResult();
+    }
+
+    static class HeightManager {
+
+        private final int initBlock;
+        private int[][] mapHeight;
+        private int maxHeight;
+        private int minHeight;
+        private int resultTime = Integer.MAX_VALUE;
+        private int resultHeight = Integer.MIN_VALUE;
+
+        public HeightManager(int[][] mapHeight, int initBlock) {
+            this.initBlock = initBlock;
+            updateMapAndMinMaxHeight(mapHeight);
+        }
+
+        private void updateMapAndMinMaxHeight(int[][] original) {
+            this.mapHeight = new int[original.length][original[0].length];
+            this.minHeight = Integer.MAX_VALUE;
+            this.maxHeight = Integer.MIN_VALUE;
+
+            for (int i = 0; i < original.length; i++) {
+                for (int j = 0; j < original[i].length; j++) {
+                    int height = original[i][j];
+                    this.mapHeight[i][j] = height;
+
+                    if (height < this.minHeight) {
+                        this.minHeight = height;
+                    }
+                    if (height > this.maxHeight) {
+                        this.maxHeight = height;
+                    }
+                }
             }
         }
 
-        getMinTime(heightList, Collections.min(heightList), Collections.max(heightList));
-        System.out.println(minTime + " " + minTimeHeight);
-    }
+        public void execute() {
+            IntStream.range(minHeight, maxHeight + 1)
+                    .forEach(this::simulateHeightLevel);
+        }
 
-    private static void getMinTime(List<Integer> heightList, int min, int max) {
-        int originalBlocks = currentBlocks;
+        private void simulateHeightLevel(int targetHeight) {
+            BlockTimeResult result = new BlockTimeResult(initBlock);
 
-        for (int i = min; i <= max; i++) {
-            currentBlocks = originalBlocks;
-            int time = getTime(heightList, i);
-            if (minTime >= time && currentBlocks >= 0) {
-                minTime = time;
-                if (minTimeHeight < i) minTimeHeight = i;
+            for (int i = 0; i < mapHeight.length; i++) {
+                for (int j = 0; j < mapHeight[i].length; j++) {
+                    int currentHeight = mapHeight[i][j];
+                    result.updateTimeAndBlocks(currentHeight - targetHeight);
+                }
+            }
+
+            if (result.blockCount >= 0) {
+                updateResult(result.time, targetHeight);
             }
         }
-    }
 
-    private static int getTime(List<Integer> heightList, int target) {
-        int time = 0;
-
-        for (Integer height : heightList) {
-            if (height < target) time += stackUpBlocks(target - height);
-            else if (height > target) time += clearBlocks(height - target);
+        private void updateResult(int time, int height) {
+            if (time < resultTime) {
+                resultTime = time;
+                resultHeight = height;
+            } else if (time == resultTime) {
+                resultHeight = Math.max(resultHeight, height);
+            }
         }
 
-        return time;
+        public String getResult() {
+            return resultTime + " " + resultHeight;
+        }
     }
 
-    private static int clearBlocks(int blockCount) {
-        currentBlocks += blockCount;
-        return blockCount * 2;
-    }
+    static class BlockTimeResult {
 
-    private static int stackUpBlocks(int blockCount) {
-        currentBlocks -= blockCount;
-        return blockCount;
+        private int time;
+        private int blockCount;
+
+        public BlockTimeResult(int blockCount) {
+            this.blockCount = blockCount;
+            this.time = 0;
+        }
+
+        public void updateTimeAndBlocks(int diff) {
+            if (diff > 0) {
+                blockCount += diff;
+                time += diff * 2;
+            } else {
+                blockCount -= Math.abs(diff);
+                time += Math.abs(diff);
+            }
+        }
     }
 }
