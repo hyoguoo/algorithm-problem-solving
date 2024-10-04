@@ -11,25 +11,34 @@ package dynamicprogramming;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PadovanSequence {
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int length = Integer.parseInt(bufferedReader.readLine());
-        List<Integer> list = new ArrayList<>();
+    private static final int MAX = 100;
+    private static final long[] padovan = new long[MAX + 1];
 
-        for (int i = 0; i < length; i++) list.add(Integer.parseInt(bufferedReader.readLine()));
-        long[] dp = new long[100 + 1];
-        solution(dp);
-        for (Integer integer : list) System.out.println(dp[integer]);
+    static {
+        solution();
     }
 
-    private static void solution(long[] dp) {
-        dp[1] = dp[2] = dp[3] = 1;
-        dp[4] = dp[5] = 2;
-        for (int i = 6; i <= 100; i++) dp[i] = dp[i - 5] + dp[i - 1];
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        int testCount = Integer.parseInt(bufferedReader.readLine());
+        StringBuilder stringBuilder = new StringBuilder();
+
+        while (testCount-- > 0) {
+            int number = Integer.parseInt(bufferedReader.readLine());
+            stringBuilder.append(padovan[number]).append("\n");
+        }
+
+        System.out.print(stringBuilder.toString().trim());
+    }
+
+    private static void solution() {
+        padovan[1] = padovan[2] = padovan[3] = 1;
+        padovan[4] = padovan[5] = 2;
+        for (int i = 6; i <= MAX; i++) {
+            padovan[i] = padovan[i - 5] + padovan[i - 1];
+        }
     }
 }
