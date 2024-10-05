@@ -20,13 +20,17 @@ public class Change {
     }
 
     private static int solution(int money) {
-        if (money == 1 || money == 3) return -1;
+        int count = 0;
+        while (money >= 0) {
+            if (money % 5 == 0) {
+                count += money / 5;
+                return count;
+            } else {
+                money -= 2;
+                count++;
+            }
+        }
 
-        int count = money / 5;
-        money %= 5;
-
-        if (money == 0) return count;
-        else if (money % 2 == 0) return count + money / 2;
-        else return (count - 1) + (money + 5) / 2;
+        return -1;
     }
 }
