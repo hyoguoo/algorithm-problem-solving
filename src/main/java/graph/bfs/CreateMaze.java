@@ -17,7 +17,6 @@ import java.util.PriorityQueue;
 
 public class CreateMaze {
 
-    static final int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
     static final int WALL = 0;
     static final int START_N = 0;
     static final int START_M = 0;
@@ -49,20 +48,19 @@ public class CreateMaze {
         while (!queue.isEmpty()) {
             Coordinate current = queue.poll();
 
-            for (int[] direction : DIRECTIONS) {
-                int nextN = current.n + direction[0];
-                int nextM = current.m + direction[1];
+            for (Direction direction: Direction.values()) {
+                Coordinate nextCoordinate = current.next(direction);
 
-                if (!isInBound(nextN, nextM, board)) {
+                if (!isInBound(nextCoordinate, board)) {
                     continue;
                 }
 
                 int newBreakCount = breakCount[current.n][current.m]
-                        + (board[nextN][nextM] == WALL ? 1 : 0);
+                        + (board[nextCoordinate.n][nextCoordinate.m] == WALL ? 1 : 0);
 
-                if (newBreakCount < breakCount[nextN][nextM]) {
-                    breakCount[nextN][nextM] = newBreakCount;
-                    queue.add(new Coordinate(nextN, nextM, newBreakCount));
+                if (newBreakCount < breakCount[nextCoordinate.n][nextCoordinate.m]) {
+                    breakCount[nextCoordinate.n][nextCoordinate.m] = newBreakCount;
+                    queue.add(new Coordinate(nextCoordinate.n, nextCoordinate.m, newBreakCount));
                 }
             }
         }
@@ -70,9 +68,32 @@ public class CreateMaze {
         return breakCount[board.length - 1][board[0].length - 1];
     }
 
-    private static boolean isInBound(int n, int m, int[][] board) {
-        return 0 <= n && n < board.length
-                && 0 <= m && m < board[0].length;
+    enum Direction {
+        UP(-1, 0),
+        DOWN(1, 0),
+        LEFT(0, -1),
+        RIGHT(0, 1);
+
+        private final int n;
+        private final int m;
+
+        Direction(int n, int m) {
+            this.n = n;
+            this.m = m;
+        }
+
+        public int getN() {
+            return n;
+        }
+
+        public int getM() {
+            return m;
+        }
+    }
+
+    private static boolean isInBound(Coordinate coordinate, int[][] board) {
+        return 0 <= coordinate.n && coordinate.n < board.length
+                && 0 <= coordinate.m && coordinate.m < board[0].length;
     }
 
     static class Coordinate implements Comparable<Coordinate> {
@@ -85,6 +106,10 @@ public class CreateMaze {
             this.n = n;
             this.m = m;
             this.breakCount = breakCount;
+        }
+
+        public Coordinate next(Direction direction) {
+            return new Coordinate(this.n + direction.getN(), this.m + direction.getM(), this.breakCount);
         }
 
         @Override
