@@ -18,64 +18,65 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class ElectingPresident {
 
+    private static final int END_SIGNAL = -1;
+
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(bufferedReader.readLine());
+        int vertexCount = Integer.parseInt(bufferedReader.readLine());
 
-        Map<Integer, List<Integer>> adjacentVertices = new HashMap<>();
+        Map<Integer, List<Integer>> graph = new HashMap<>();
 
         while (true) {
             int[] edgeInfo = Arrays.stream(bufferedReader.readLine().split(" "))
                     .mapToInt(Integer::parseInt)
                     .toArray();
-            if (edgeInfo[0] == -1 && edgeInfo[1] == -1) {
+            if (edgeInfo[0] == END_SIGNAL && edgeInfo[1] == END_SIGNAL) {
                 break;
             }
-            adjacentVertices.computeIfAbsent(edgeInfo[0], v -> new ArrayList<>()).add(edgeInfo[1]);
-            adjacentVertices.computeIfAbsent(edgeInfo[1], v -> new ArrayList<>()).add(edgeInfo[0]);
+            graph.computeIfAbsent(edgeInfo[0], v -> new ArrayList<>()).add(edgeInfo[1]);
+            graph.computeIfAbsent(edgeInfo[1], v -> new ArrayList<>()).add(edgeInfo[0]);
         }
 
-        solution(adjacentVertices, n);
+        System.out.print(solution(graph, vertexCount));
     }
 
-    private static void solution(Map<Integer, List<Integer>> adjacentVertices, int n) {
-        int[] distances = new int[n + 1];
-        int minDistance = Integer.MAX_VALUE;
-        List<Integer> candidates = new ArrayList<>();
+    private static String solution(Map<Integer, List<Integer>> graph, int vertexCount) {
+        int[] distances = calculateDistances(graph, vertexCount);
+        int minDistance = getMinDistance(distances, vertexCount);
+        int[] candidates = findCandidates(vertexCount, distances, minDistance);
 
-        for (int i = 1; i <= n; i++) {
-            distances[i] = bfs(adjacentVertices, i, n);
-            minDistance = Math.min(minDistance, distances[i]);
-        }
-
-        for (int i = 1; i <= n; i++) {
-            if (distances[i] == minDistance) {
-                candidates.add(i);
-            }
-        }
-
-        System.out.println(minDistance + " " + candidates.size());
-        candidates.forEach(candidate -> System.out.print(candidate + " "));
+        return formatResult(candidates, minDistance);
     }
 
-    private static int bfs(Map<Integer, List<Integer>> adjacentVertices, int start, int n) {
-        boolean[] visited = new boolean[n + 1];
-        visited[start] = true;
+    private static int[] calculateDistances(Map<Integer, List<Integer>> graph, int vertexCount) {
+        int[] distances = new int[vertexCount + 1];
 
-        int distance = 0;
+        IntStream.rangeClosed(1, vertexCount)
+                .forEach(v -> distances[v] = bfs(graph, v, vertexCount));
 
+        return distances;
+    }
+
+    private static int bfs(Map<Integer, List<Integer>> graph, int startVertex, int vertexCount) {
+        boolean[] visited = new boolean[vertexCount + 1];
         Queue<Integer> queue = new LinkedList<>();
-        queue.add(start);
+
+        visited[startVertex] = true;
+        queue.add(startVertex);
+
+        int distance = -1;
 
         while (!queue.isEmpty()) {
             int size = queue.size();
             for (int i = 0; i < size; i++) {
                 Integer current = queue.poll();
 
-                for (Integer next : adjacentVertices.getOrDefault(current, new ArrayList<>())) {
+                for (Integer next : graph.getOrDefault(current, new ArrayList<>())) {
                     if (visited[next]) {
                         continue;
                     }
@@ -86,6 +87,26 @@ public class ElectingPresident {
             distance++;
         }
 
-        return distance - 1;
+        return distance;
+    }
+
+    private static int getMinDistance(int[] distances, int vertexCount) {
+        return IntStream.rangeClosed(1, vertexCount)
+                .map(i -> distances[i])
+                .min()
+                .orElseThrow();
+    }
+
+    private static int[] findCandidates(int vertexCount, int[] distances, int minDistance) {
+        return IntStream.rangeClosed(1, vertexCount)
+                .filter(i -> distances[i] == minDistance)
+                .toArray();
+    }
+
+    private static String formatResult(int[] candidates, int minDistance) {
+        return minDistance + " " + candidates.length + "\n" +
+                Arrays.stream(candidates)
+                        .mapToObj(String::valueOf)
+                        .collect(Collectors.joining(" "));
     }
 }
