@@ -11,115 +11,118 @@ package implementation.simulation;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.stream.IntStream;
 
 public class Bingo {
 
-    static final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-    static final int BOARD_SIZE = 5;
+    private static final int BOARD_SIZE = 5;
 
     public static void main(String[] args) throws IOException {
-        int[][] board = getBoard();
-        List<Integer> numbers = getNumbers();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        int[][] board = new int[BOARD_SIZE][BOARD_SIZE];
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            board[i] = Arrays.stream(bufferedReader.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+        }
+        int[] calls = new int[BOARD_SIZE * BOARD_SIZE];
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            int[] line = Arrays.stream(bufferedReader.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            System.arraycopy(line, 0, calls, i * 5, BOARD_SIZE);
+        }
 
-        System.out.print(solution(board, numbers));
+        System.out.print(solution(board, calls));
     }
 
-    private static int solution(int[][] board, List<Integer> numbers) {
-        boolean[][] isMarked = new boolean[BOARD_SIZE][BOARD_SIZE];
+    private static int solution(int[][] board, int[] calls) {
+        Board bingoBoard = new Board(board);
         int count = 0;
 
-        for (Integer number : numbers) {
-            count++;
-            findNumberCoordinate(board, number)
-                    .ifPresent(value -> isMarked[value.n][value.m] = true);
-
-            int bingoCount = getBingoCount(isMarked);
-            if (bingoCount >= 3) return count;
+        while (true) {
+            for (int call : calls) {
+                bingoBoard.call(call);
+                count++;
+                if (bingoBoard.isBingo()) {
+                    return count;
+                }
+            }
         }
-
-        return -1;
     }
 
-    private static Optional<Coordinate> findNumberCoordinate(int[][] board, Integer number) {
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                if (board[i][j] == number) return Optional.of(new Coordinate(i, j));
+    static class Board {
+
+        private static final int BINGO_COUNT = 3;
+
+        private final int[][] values;
+        private final boolean[][] marks;
+
+        public Board(int[][] values) {
+            this.values = values;
+            this.marks = new boolean[BOARD_SIZE][BOARD_SIZE];
+        }
+
+        public void call(int call) {
+            for (int n = 0; n < BOARD_SIZE; n++) {
+                for (int m = 0; m < BOARD_SIZE; m++) {
+                    if (values[n][m] == call) {
+                        marks[n][m] = true;
+                        return;
+                    }
+                }
             }
         }
 
-        return Optional.empty();
-    }
-
-    private static int getBingoCount(boolean[][] isMarked) {
-        int bingoCount = 0;
-
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            if (isBingo(isMarked[i])) bingoCount++;
+        public boolean isBingo() {
+            return getBingoCount() >= BINGO_COUNT;
         }
 
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            boolean[] column = new boolean[BOARD_SIZE];
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                column[j] = isMarked[j][i];
+        private int getBingoCount() {
+            int count = 0;
+
+            count += countHorizontal();
+            count += countVertical();
+            count += countDiagonal();
+
+            return count;
+        }
+
+        private int countDiagonal() {
+            int count = 0;
+            if (IntStream.range(0, BOARD_SIZE)
+                    .allMatch(n -> marks[n][n])) {
+                count++;
             }
-            if (isBingo(column)) bingoCount++;
+
+            if (IntStream.range(0, BOARD_SIZE)
+                    .allMatch(n -> marks[n][BOARD_SIZE - n - 1])) {
+                count++;
+            }
+            return count;
         }
 
-        boolean[] diagonal = new boolean[BOARD_SIZE];
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            diagonal[i] = isMarked[i][i];
-        }
-        if (isBingo(diagonal)) bingoCount++;
-
-        boolean[] reverseDiagonal = new boolean[BOARD_SIZE];
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            reverseDiagonal[i] = isMarked[i][BOARD_SIZE - i - 1];
-        }
-        if (isBingo(reverseDiagonal)) bingoCount++;
-
-        return bingoCount;
-    }
-
-    private static boolean isBingo(boolean[] column) {
-        for (boolean isMarked : column) {
-            if (!isMarked) return false;
+        private int countHorizontal() {
+            return (int) IntStream.range(0, values[0].length)
+                    .filter(this::isBingoHorizontal)
+                    .count();
         }
 
-        return true;
-    }
-
-    private static int[][] getBoard() throws IOException {
-        int[][] board = new int[BOARD_SIZE][BOARD_SIZE];
-
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            board[i] = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+        private boolean isBingoHorizontal(int n) {
+            return IntStream.range(0, BOARD_SIZE)
+                    .allMatch(m -> marks[n][m]);
         }
 
-        return board;
-    }
-
-    private static List<Integer> getNumbers() throws IOException {
-        List<Integer> numbers = new ArrayList<>();
-
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            int[] line = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            for (int number : line) numbers.add(number);
+        private int countVertical() {
+            return (int) IntStream.range(0, values[0].length)
+                    .filter(this::isBingoVertical)
+                    .count();
         }
 
-        return numbers;
-    }
-
-    static class Coordinate {
-        int n;
-        int m;
-
-        public Coordinate(int n, int m) {
-            this.n = n;
-            this.m = m;
+        private boolean isBingoVertical(int m) {
+            return IntStream.range(0, BOARD_SIZE)
+                    .allMatch(n -> marks[n][m]);
         }
     }
 }
