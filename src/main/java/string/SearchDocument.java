@@ -19,14 +19,14 @@ public class SearchDocument {
         String src = bufferedReader.readLine();
         String target = bufferedReader.readLine();
 
-        System.out.println(solution(src, target));
+        System.out.print(solution(src, target));
     }
 
     private static int solution(String src, String target) {
         int count = 0;
         int index = 0;
 
-        while (index <= src.length() - target.length()) {
+        while (index + target.length() <= src.length()) {
             if (src.startsWith(target, index)) {
                 count++;
                 index += target.length();
