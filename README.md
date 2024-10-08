@@ -8,7 +8,6 @@
 
 - [프로그래머스](https://programmers.co.kr/)
 
-
 ## Cheat Level
 
 해당 문제를 풀면서 치팅한 정도를 나타내는 레벨
@@ -65,3 +64,4 @@
 - Geometry
 - Counterclockwise
 - Bipartite Graph
+- Trie
