@@ -21,7 +21,7 @@ public class CreateStar1to13 {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         int length = Integer.parseInt(bufferedReader.readLine());
 
-        solution13(length);
+        solution15(length);
         System.out.print(stringBuilder);
     }
 
@@ -177,6 +177,22 @@ public class CreateStar1to13 {
         }
         for (int i = length - 1; i >= 1; i--) {
             for (int j = 1; j <= i; j++) {
+                addStar();
+            }
+            addNewline();
+        }
+    }
+
+    private static void solution15(int length) {
+        for (int i = 1; i <= length; i++) {
+            for (int j = 1; j <= length - i; j++) {
+                addSpace();
+            }
+            addStar();
+            for (int j = 1; j <= 2 * (i - 1) - 1; j++) {
+                addSpace();
+            }
+            if (i != 1) {
                 addStar();
             }
             addNewline();
