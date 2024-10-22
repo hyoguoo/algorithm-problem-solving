@@ -1,7 +1,7 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 13241
+ * Problem Number: 5347
  * Cheat Level: 0
  * Algorithm: Mathematics
  */
@@ -17,9 +17,17 @@ public class LCM {
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        long[] numberArray = Arrays.stream(bufferedReader.readLine().split(" ")).mapToLong(Long::parseLong).toArray();
+        int testCount = Integer.parseInt(bufferedReader.readLine());
+        StringBuilder stringBuilder = new StringBuilder();
 
-        System.out.println(getLcm(numberArray[0], numberArray[1]));
+        while (testCount-- > 0) {
+            int[] numbers = Arrays.stream(bufferedReader.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            stringBuilder.append(getLcm(numbers[0], numbers[1])).append("\n");
+        }
+
+        System.out.print(stringBuilder.toString().trim());
     }
 
     public static long getLcm(long x, long y) {
