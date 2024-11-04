@@ -11,7 +11,14 @@ package graph.bfs;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.stream.IntStream;
 
 public class CountingCounts {
 
@@ -19,44 +26,61 @@ public class CountingCounts {
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(bufferedReader.readLine());
-        int[] startEnd = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        int start = startEnd[0];
-        int end = startEnd[1];
-        List<Integer>[] graph = new List[n + 1];
-        for (int i = 1; i <= n; i++) graph[i] = new ArrayList<>();
-        int m = Integer.parseInt(bufferedReader.readLine());
-        while (m-- > 0) {
-            int[] info = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            int a = info[0];
-            int b = info[1];
-            graph[a].add(b);
-            graph[b].add(a);
+        int vertexCount = Integer.parseInt(bufferedReader.readLine());
+
+        int[] queryInfo = Arrays.stream(bufferedReader.readLine().split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        Query query = new Query(queryInfo[0], queryInfo[1]);
+
+        int edgeCount = Integer.parseInt(bufferedReader.readLine());
+
+        Map<Integer, List<Integer>> graph = new HashMap<>();
+
+        for (int i = 0; i < edgeCount; i++) {
+            int[] edgeInfo = Arrays.stream(bufferedReader.readLine().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            graph.computeIfAbsent(edgeInfo[0], v -> new ArrayList<>()).add(edgeInfo[1]);
+            graph.computeIfAbsent(edgeInfo[1], v -> new ArrayList<>()).add(edgeInfo[0]);
         }
 
-        System.out.println(solution(graph, start, end));
+        System.out.print(solution(graph, query, vertexCount));
     }
 
-    private static int solution(List<Integer>[] graph, int start, int end) {
+    private static int solution(Map<Integer, List<Integer>> graph, Query query, int vertexCount) {
         Queue<Integer> queue = new LinkedList<>();
-        int[] visit = new int[graph.length];
-        Arrays.fill(visit, NOT_VISIT);
-        queue.add(start);
-        visit[start] = 0;
+        queue.add(query.start);
+
+        int[] distance = IntStream.range(0, vertexCount + 1)
+                .map(i -> NOT_VISIT)
+                .toArray();
+        distance[query.start] = 0;
 
         while (!queue.isEmpty()) {
-            int current = queue.poll();
+            Integer currentVertex = queue.poll();
+            int currentDistance = distance[currentVertex];
 
-            if (current == end) return visit[current];
-
-            for (Integer to : graph[current]) {
-                if (visit[to] == NOT_VISIT) {
-                    queue.add(to);
-                    visit[to] = visit[current] + 1;
-                }
-            }
+            graph.getOrDefault(currentVertex, new ArrayList<>())
+                    .stream()
+                    .filter(vertex -> distance[vertex] == NOT_VISIT)
+                    .forEach(vertex -> {
+                        distance[vertex] = currentDistance + 1;
+                        queue.add(vertex);
+                    });
         }
 
-        return visit[end];
+        return distance[query.end];
+    }
+
+    static class Query {
+
+        private final int start;
+        private final int end;
+
+        public Query(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
     }
 }
