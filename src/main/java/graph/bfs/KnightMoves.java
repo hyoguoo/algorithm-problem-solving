@@ -13,11 +13,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Queue;
+import java.util.stream.IntStream;
 
 public class KnightMoves {
 
     private static final int NOT_VISITED = -1;
+    private static final int NOT_REACHABLE = -1;
 
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
@@ -49,41 +52,44 @@ public class KnightMoves {
 
     private static int solution(Coordinate startCoordinate, Coordinate endCoordinate, int sizeN) {
         Queue<Coordinate> queue = new LinkedList<>();
-        int[][] distance = initDistance(sizeN);
         queue.add(startCoordinate);
+
+        int[][] distance = initDistance(sizeN);
         distance[startCoordinate.n][startCoordinate.m] = 0;
 
         while (!queue.isEmpty()) {
             Coordinate currentCoordinate = queue.poll();
-            if (currentCoordinate.n == endCoordinate.n && currentCoordinate.m == endCoordinate.m) {
-                return distance[currentCoordinate.n][currentCoordinate.m];
+
+            int currentDistance = distance[currentCoordinate.n][currentCoordinate.m];
+
+            if (currentCoordinate.equals(endCoordinate)) {
+                return currentDistance;
             }
-            for (Direction direction : Direction.values()) {
-                Coordinate nextCoordinate = currentCoordinate.nextCoordinate(direction);
-                if (!isInBound(sizeN, nextCoordinate)) {
-                    continue;
-                }
-                if (distance[nextCoordinate.n][nextCoordinate.m] == NOT_VISITED) {
-                    distance[nextCoordinate.n][nextCoordinate.m] =
-                            distance[currentCoordinate.n][currentCoordinate.m] + 1;
-                    queue.add(nextCoordinate);
-                }
-            }
+
+            Arrays.stream(Direction.values())
+                    .map(currentCoordinate::nextCoordinate)
+                    .filter(coordinate -> isInBound(coordinate, sizeN))
+                    .filter(coordinate -> distance[coordinate.n][coordinate.m] == NOT_VISITED)
+                    .forEach(coordinate -> {
+                        distance[coordinate.n][coordinate.m] = currentDistance + 1;
+                        queue.add(coordinate);
+                    });
         }
 
-        return -1;
+        return NOT_REACHABLE;
     }
 
     private static int[][] initDistance(int sizeN) {
-        int[][] distance = new int[sizeN][sizeN];
-        Arrays.stream(distance)
-                .forEach(row -> Arrays.fill(row, NOT_VISITED));
-        return distance;
+        return IntStream.range(0, sizeN)
+                .mapToObj(i -> IntStream.range(0, sizeN)
+                        .map(j -> NOT_VISITED)
+                        .toArray())
+                .toArray(int[][]::new);
     }
 
-    private static boolean isInBound(int sizeN, Coordinate coordinate) {
-        return 0 <= coordinate.n && coordinate.n < sizeN
-                && 0 <= coordinate.m && coordinate.m < sizeN;
+    private static boolean isInBound(Coordinate coordinate, int sizeN) {
+        return 0 <= coordinate.n && coordinate.n < sizeN &&
+                0 <= coordinate.m && coordinate.m < sizeN;
     }
 
     enum Direction {
@@ -117,6 +123,23 @@ public class KnightMoves {
 
         public Coordinate nextCoordinate(Direction direction) {
             return new Coordinate(n + direction.n, m + direction.m);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            Coordinate that = (Coordinate) o;
+            return n == that.n && m == that.m;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(n, m);
         }
     }
 }
