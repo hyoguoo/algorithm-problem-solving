@@ -12,7 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class CreateStar1to13 {
+public class CreateStar1to16 {
 
     private static final char STAR = '*';
     private static final StringBuilder stringBuilder = new StringBuilder();
@@ -21,7 +21,7 @@ public class CreateStar1to13 {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         int length = Integer.parseInt(bufferedReader.readLine());
 
-        solution15(length);
+        solution16(length);
         System.out.print(stringBuilder);
     }
 
@@ -194,6 +194,19 @@ public class CreateStar1to13 {
             }
             if (i != 1) {
                 addStar();
+            }
+            addNewline();
+        }
+    }
+
+    private static void solution16(int length) {
+        for (int i = 1; i <= length; i++) {
+            for (int j = 1; j <= length - i; j++) {
+                addSpace();
+            }
+            for (int j = 1; j <= 2 * i - 1; j += 2) {
+                addStar();
+                addSpace();
             }
             addNewline();
         }
