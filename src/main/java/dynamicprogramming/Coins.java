@@ -1,7 +1,7 @@
 /*
  * BAEKJOON ONLINE JUDGE
  * https://www.acmicpc.net
- * Problem Number: 3067
+ * Problem Number: 3067 / 9084
  * Cheat Level: 0
  * Algorithm: Dynamic Programming
  */
@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class Coins {
 
@@ -37,11 +38,9 @@ public class Coins {
         int[] dp = new int[target + 1];
         dp[0] = 1;
 
-        for (int coin : coins) {
-            for (int i = coin; i <= target; i++) {
-                dp[i] += dp[i - coin];
-            }
-        }
+        Arrays.stream(coins).forEach(coin ->
+                IntStream.rangeClosed(coin, target).forEach(i -> dp[i] += dp[i - coin])
+        );
 
         return dp[target];
     }
